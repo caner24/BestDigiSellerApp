@@ -1,0 +1,6 @@
+@BestDigiSellerApp.File.Api_HostAddress = http://localhost:5147
+
+GET {{BestDigiSellerApp.File.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
