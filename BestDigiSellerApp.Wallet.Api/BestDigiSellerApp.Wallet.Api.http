@@ -1,0 +1,6 @@
+@BestDigiSellerApp.Wallet.Api_HostAddress = http://localhost:5137
+
+GET {{BestDigiSellerApp.Wallet.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
