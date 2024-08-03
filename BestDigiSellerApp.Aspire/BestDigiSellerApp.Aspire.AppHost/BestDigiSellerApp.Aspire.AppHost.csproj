@@ -11,6 +11,11 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost" Version="8.0.0" />
+    <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="8.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +27,7 @@
     <ProjectReference Include="..\..\BestDigiSellerApp.Product.Api\BestDigiSellerApp.Product.Api.csproj" />
     <ProjectReference Include="..\..\BestDigiSellerApp.Stripe.Api\BestDigiSellerApp.Stripe.Api.csproj" />
     <ProjectReference Include="..\..\BestDigiSellerApp.User.Api\BestDigiSellerApp.User.Api.csproj" />
+    <ProjectReference Include="..\..\BestDigiSellerApp.Wallet.Api\BestDigiSellerApp.Wallet.Api.csproj" />
   </ItemGroup>
 
 </Project>

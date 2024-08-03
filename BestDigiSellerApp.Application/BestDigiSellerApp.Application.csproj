@@ -6,4 +6,23 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="MassTransit" Version="8.2.3" />
+    <PackageReference Include="MediatR" Version="12.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BestDigiSellerApp.User.Data\BestDigiSellerApp.User.Data.csproj" />
+    <ProjectReference Include="..\BestDigiSellerApp.User.Entity\BestDigiSellerApp.User.Entity.csproj" />
+    <ProjectReference Include="..\BestDigiSellerApp.Wallet.Data\BestDigiSellerApp.Wallet.Data.csproj" />
+    <ProjectReference Include="..\BestDigiSellerApp.Wallet.Entity\BestDigiSellerApp.Wallet.Entity.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Wallet\Handlers\QueryHandlers\" />
+    <Folder Include="Wallet\Queries\Response\" />
+    <Folder Include="Wallet\Queries\Request\" />
+  </ItemGroup>
+
 </Project>

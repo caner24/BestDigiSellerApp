@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Wallet\Handlers\QueryHandlers\" />
+    <Folder Include="Wallet\Queries\Request\" />
+    <Folder Include="Wallet\Queries\Response\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="MediatR" Version="12.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BestDigiSellerApp.Wallet.Data\BestDigiSellerApp.Wallet.Data.csproj" />
+    <ProjectReference Include="..\BestDigiSellerApp.Wallet.Entity\BestDigiSellerApp.Wallet.Entity.csproj" />
+  </ItemGroup>
+
+</Project>
