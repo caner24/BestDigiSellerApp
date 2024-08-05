@@ -18,7 +18,12 @@ namespace BestDigiSellerApp.User.Api.Extensions
         public static void IdentityConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("UserSqlConnection");
-            services.AddDbContext<UserContext>(options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("BestDigiSellerApp.User.Api")));
+            services.AddDbContext<UserContext>(options => options.UseSqlServer(connectionString, b =>
+            {
+                b.EnableRetryOnFailure();
+                b.MigrationsAssembly("BestDigiSellerApp.User.Api");
+
+            }));
             services.AddIdentity<BestDigiSellerApp.User.Entity.User, IdentityRole>(options =>
             {
                 options.SignIn.RequireConfirmedEmail = true;
@@ -29,7 +34,7 @@ namespace BestDigiSellerApp.User.Api.Extensions
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
                 options.Lockout.MaxFailedAccessAttempts = 3;
             }).AddDefaultTokenProviders().AddEntityFrameworkStores<UserContext>();
-            services.AddAuthorizationBuilder();
+
             services.Configure<DataProtectionTokenProviderOptions>(opt =>
      opt.TokenLifespan = TimeSpan.FromHours(2));
         }
@@ -37,7 +42,7 @@ namespace BestDigiSellerApp.User.Api.Extensions
         {
             services.AddHttpClient<WalletClient>(client =>
             {
-                client.BaseAddress = new("https+http://bestdigisellerapp-wallet-api");
+                client.BaseAddress = new("https://bestdigisellerapp-wallet-api");
             });
         }
         public static void AddMassTransit(this IServiceCollection services, IConfiguration config)
@@ -47,6 +52,7 @@ namespace BestDigiSellerApp.User.Api.Extensions
                 x.SetKebabCaseEndpointNameFormatter();
                 x.AddConsumer<CreateWalletConsume>();
                 x.AddConsumer<EmailConfirmationConsumer>();
+                x.AddConsumer<LoginTwoStepConsume>();
                 x.UsingRabbitMq((context, cfg) =>
                 {
                     var host = config.GetConnectionString("messaging");
@@ -58,6 +64,10 @@ namespace BestDigiSellerApp.User.Api.Extensions
                     cfg.ReceiveEndpoint("create-wallet-verification", e =>
                     {
                         e.ConfigureConsumer<CreateWalletConsume>(context);
+                    });
+                    cfg.ReceiveEndpoint("two-step-confirmation", e =>
+                    {
+                        e.ConfigureConsumer<LoginTwoStepConsume>(context);
                     });
                 });
             });

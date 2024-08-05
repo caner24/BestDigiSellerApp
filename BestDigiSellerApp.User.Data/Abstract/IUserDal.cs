@@ -1,4 +1,5 @@
 ﻿using BestDigiSellerApp.User.Entity.Dto;
+using FluentResults;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -11,16 +12,15 @@ namespace BestDigiSellerApp.User.Data.Abstract
     public interface IUserDal
     {
         Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistrationDto);
-        Task<SignInResult> LogInUser(UserForLoginDto userForAuthDto);
-        Task<SignInResult> LoginTwoStep(LoginTwoStepDto loginTwoStepDto);
-        Task<string> GenerateTwoStep(string email);
-        Task<bool> ValidateUser(UserForAuthenticationDto userForAuthDto);
-        Task<TokenDto> CreateToken(bool populateExp);
-        Task<TokenDto> RefreshToken(TokenDto tokenDto);
-        Task<string> GenerateEmailConfirmationToken(string email);
-        Task<string> GeneratePasswordResetToken(string email);
-        Task<string> GenerateChangePhoneNumber(string email);
-        Task<IdentityResult> ConfirmEmailToken(string email, string token);
+        Task<Result<SignInResult>> LogInUser(UserForLoginDto userForAuthDto);
+        Task<Result<SignInResult>> LoginTwoStep(LoginTwoStepDto loginTwoStepDto);
+        Task<Result<string>> GenerateTwoStep(string email);
+        Task<Result<TokenDto>> CreateToken(bool populateExp);
+        Task<Result<TokenDto>> RefreshToken(TokenDto tokenDto);
+        Task<Result<string>> GenerateEmailConfirmationToken(string email);
+        Task<Result<string>> GeneratePasswordResetToken(string email);
+        Task<Result<string>> GenerateChangePhoneNumber(string email);
+        Task<Result<IdentityResult>> ConfirmEmailToken(string email, string token);
 
     }
 }

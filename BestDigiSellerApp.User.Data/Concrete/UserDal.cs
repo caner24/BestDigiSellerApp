@@ -2,6 +2,7 @@
 using BestDigiSellerApp.User.Data.Abstract;
 using BestDigiSellerApp.User.Entity.Dto;
 using BestDigiSellerApp.User.Entity.Exceptions;
+using FluentResults;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -42,10 +43,10 @@ namespace BestDigiSellerApp.User.Data.Concrete
             _configuration = configuration;
         }
 
-        public async Task<TokenDto> CreateToken(bool populateExp)
+        public async Task<Result<TokenDto>> CreateToken(bool populateExp)
         {
             if (!_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
-                throw new SessionException();
+                return new SessionResult();
 
             var signinCredentials = GetSignInCredentials();
             var claims = _httpContextAccessor.HttpContext.User.Claims.Where(c =>
@@ -62,12 +63,12 @@ namespace BestDigiSellerApp.User.Data.Concrete
             await _userManager.UpdateAsync(user);
 
             var accessToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-            return new TokenDto()
+            return Result.Ok(new TokenDto()
             {
                 ExpireTime = user.RefreshTokenExpiryTime,
                 AccessToken = accessToken,
                 RefreshToken = refreshToken
-            };
+            });
         }
 
         public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistrationDto)
@@ -79,24 +80,14 @@ namespace BestDigiSellerApp.User.Data.Concrete
             return result;
         }
 
-        public async Task<bool> ValidateUser(UserForAuthenticationDto userForAuthDto)
-        {
-            var user = await _userManager.FindByEmailAsync(userForAuthDto.UserEmail);
-            var result = (user != null && await _userManager.CheckPasswordAsync(user, userForAuthDto.Password));
-            if (!result)
-            {
-                Log.Warning($"{nameof(ValidateUser)} : Authentication failed. Wrong username or password.");
-            }
-            return result;
-        }
-        public async Task<SignInResult> LogInUser(UserForLoginDto userForAuthDto)
+        public async Task<Result<SignInResult>> LogInUser(UserForLoginDto userForAuthDto)
         {
             var user = await _userManager.FindByEmailAsync(userForAuthDto.UserEmail);
             if (user == null)
-                return SignInResult.Failed;
+                return new UserNotFoundResult();
 
             var result = await _signInManager.PasswordSignInAsync(user, userForAuthDto.Password, userForAuthDto.IsRemember, true);
-            return result;
+            return Result.Ok(result);
         }
 
         private SigningCredentials GetSignInCredentials()
@@ -163,7 +154,7 @@ namespace BestDigiSellerApp.User.Data.Concrete
             return principal;
         }
 
-        public async Task<TokenDto> RefreshToken(TokenDto tokenDto)
+        public async Task<Result<TokenDto>> RefreshToken(TokenDto tokenDto)
         {
             var principal = GetPrincipalFromExpiredToken(tokenDto.AccessToken);
             var user = await _userManager.FindByNameAsync(principal.Identity.Name);
@@ -171,84 +162,84 @@ namespace BestDigiSellerApp.User.Data.Concrete
             if (user is null ||
                 user.RefreshToken != tokenDto.RefreshToken ||
                 user.RefreshTokenExpiryTime <= DateTime.Now)
-                throw new RefreshTokenExpiredException();
+                return new RefreshTokenExpiredResult();
 
             return await CreateToken(populateExp: false);
         }
 
-        public async Task<string> GenerateEmailConfirmationToken(string email)
+        public async Task<Result<string>> GenerateEmailConfirmationToken(string email)
         {
             var isUserExist = await _userManager.FindByEmailAsync(email);
 
             if (isUserExist == null)
-                throw new UserNotFoundException();
+                return new UserNotFoundResult();
 
             if (isUserExist.EmailConfirmed)
-                throw new EmailConfirmedException();
+                return new EmailConfirmedResult();
 
 
             var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(isUserExist);
 
-            return HttpUtility.UrlEncode(confirmationToken)
-;
+            return Result.Ok(HttpUtility.UrlEncode(confirmationToken));
+            ;
         }
 
-        public async Task<string> GeneratePasswordResetToken(string email)
+        public async Task<Result<string>> GeneratePasswordResetToken(string email)
         {
             var isUserExist = await _userManager.FindByEmailAsync(email);
             if (isUserExist is null)
-                throw new Exception("User was not founded!.");
+                return new UserNotFoundResult();
 
             var passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(isUserExist);
 
-            return HttpUtility.UrlEncode(passwordResetToken);
+            return Result.Ok(HttpUtility.UrlEncode(passwordResetToken));
         }
 
-        public async Task<string> GenerateChangePhoneNumber(string email)
+        public async Task<Result<string>> GenerateChangePhoneNumber(string email)
         {
             var isUserExist = await _userManager.FindByEmailAsync(email);
             if (isUserExist is null)
-                throw new UserNotFoundException();
+                return new UserNotFoundResult();
 
             var passwordResetToken = await _userManager.GenerateChangePhoneNumberTokenAsync(isUserExist, isUserExist.PhoneNumber);
 
-            return HttpUtility.UrlEncode(passwordResetToken);
+            return Result.Ok(HttpUtility.UrlEncode(passwordResetToken));
         }
 
-        public async Task<IdentityResult> ConfirmEmailToken(string email, string token)
+        public async Task<Result<IdentityResult>> ConfirmEmailToken(string email, string token)
         {
 
             var isUserExist = await _userManager.FindByEmailAsync(email);
             if (isUserExist is null)
-                throw new UserNotFoundException();
+                return new UserNotFoundResult();
 
-            var isTokenValid = await _userManager.VerifyUserTokenAsync(isUserExist, "EmailConfirmation", "ConfirmEmail", token);
+            var isTokenValid = await _userManager.VerifyUserTokenAsync(isUserExist, TokenOptions.DefaultProvider, "ConfirmEmail", token);
             if (isTokenValid)
-                throw new EmailTokenExpireException();
+                return new EmailTokenExpireResult();
 
             var identityResult = await _userManager.ConfirmEmailAsync(isUserExist, HttpUtility.UrlDecode(token));
-            return identityResult;
+            return Result.Ok(identityResult);
         }
 
-        public async Task<string> GenerateTwoStep(string email)
+        public async Task<Result<string>> GenerateTwoStep(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             var step = await _userManager.GetTwoFactorEnabledAsync(user);
             if (step is false)
-                await _userManager.SetTwoFactorEnabledAsync(user, true);
+                return new TwoStepIsInactiveResult();
 
             var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
-            return token;
+            return Result.Ok(token);
         }
 
-        public async Task<SignInResult> LoginTwoStep(LoginTwoStepDto loginTwoStepDto)
+        public async Task<Result<SignInResult>> LoginTwoStep(LoginTwoStepDto loginTwoStepDto)
         {
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             if (user == null)
-                throw new UserNotAllowedException();
+                return new UserNotAllowedResult();
 
             var result = await _signInManager.TwoFactorSignInAsync("Email", loginTwoStepDto.Code, loginTwoStepDto.IsPersident, loginTwoStepDto.RememberClient);
-            return result;
+            return Result.Ok(result);
         }
 
     }

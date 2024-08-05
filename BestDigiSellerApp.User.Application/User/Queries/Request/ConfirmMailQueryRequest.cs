@@ -1,6 +1,6 @@
 ﻿
-using BestDigiSellerApp.User.Application.User.Queries.Response;
 using BestDigiSellerApp.User.Entity.Dto;
+using FluentResults;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.User.Application.User.Queries.Request
 {
-    public record ConfirmMailQueryRequest : ConfirmMailQueryRequestDto, IRequest<ConfirmMailQueryResponse>
+    public record ConfirmMailQueryRequest : ConfirmMailQueryRequestDto, IRequest<Result>
     {
 
     }

@@ -4,7 +4,10 @@ using BestDigiSellerApp.Wallet.Application.Wallet.Commands.Response;
 using BestDigiSellerApp.Wallet.Data.Abstract;
 using BestDigiSellerApp.Wallet.Entity;
 using BestDigiSellerApp.Wallet.Entity.Enums;
+using BestDigiSellerApp.Wallet.Entity.Exceptions;
+using FluentResults;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,26 +16,46 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.Wallet.Application.Wallet.Handlers.CommandHandlers
 {
-    public class CreateWalletCommandHandler : IRequestHandler<CreateWalletCommandRequest, CreateWalletCommandResponse>
+    public class CreateWalletCommandHandler : IRequestHandler<CreateWalletCommandRequest, Result<CreateWalletCommandResponse>>
     {
-        private readonly IWalletDal _walletDal;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public CreateWalletCommandHandler(IWalletDal walletDal, IMapper mapper)
+        public CreateWalletCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _mapper = mapper;
-            _walletDal = walletDal;
+            _unitOfWork = unitOfWork;
         }
-        public async Task<CreateWalletCommandResponse> Handle(CreateWalletCommandRequest request, CancellationToken cancellationToken)
+        public async Task<Result<CreateWalletCommandResponse>> Handle(CreateWalletCommandRequest request, CancellationToken cancellationToken)
         {
-            var wallet = _mapper.Map<BestDigiSellerApp.Wallet.Entity.Wallet>(request);
-            var iban = GenerateRandomIban("TR");
-            wallet.WalletDetails.Add(new WalletDetail { Currency = Currency.TRY, Iban = iban });
-            await _walletDal.AddAsync(wallet);
-            return new CreateWalletCommandResponse { Iban = iban };
+            var currency = request.Currency switch
+            {
+                Currency.TRY => "TR",
+                Currency.USD => "US",
+                Currency.EUR => "EUR"
+            };
+            var isWalletExist = await _unitOfWork.WalletDal.Get(x => x.UserId == request.UserEmail).Include(x => x.WalletDetails).AsNoTracking().FirstOrDefaultAsync();
+            if (isWalletExist is not null)
+            {
+                if (isWalletExist.WalletDetails.Exists(x => x.Currency == request.Currency))
+                    return Result.Fail(new AlreadyHaveCurrencyAccountResult());
+
+                var iban = GenerateRandomIban(currency);
+                isWalletExist.WalletDetails.Add(new WalletDetail { Currency = request.Currency, Iban = iban });
+                await _unitOfWork.WalletDal.UpdateAsync(isWalletExist);
+                return new CreateWalletCommandResponse { Iban = iban, UserEmail = request.UserEmail };
+            }
+            else
+            {
+                var wallet = _mapper.Map<BestDigiSellerApp.Wallet.Entity.Wallet>(request);
+                var iban = GenerateRandomIban(currency);
+                wallet.WalletDetails.Add(new WalletDetail { Currency = request.Currency, Iban = iban });
+                await _unitOfWork.WalletDal.AddAsync(wallet);
+                return new CreateWalletCommandResponse { Iban = iban, UserEmail = request.UserEmail };
+            }
         }
-        public string GenerateRandomIban(string currency)
+        public string GenerateRandomIban(string currencyText)
         {
-            string countryCode = currency;
+            string countryCode = currencyText;
             string checkDigits = "82";
             string bankCode = "00062";
             int accountNumberLength = 16;

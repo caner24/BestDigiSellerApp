@@ -1,5 +1,6 @@
 ﻿using BestDigiSellerApp.User.Application.User.Commands.Response;
 using BestDigiSellerApp.User.Entity.Dto;
+using FluentResults;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.User.Application.User.Commands.Request
 {
-    public record ReConfirmMailCodeCommandRequest : ReConfirmMailCodeDto, IRequest<ReConfirmMailCodeCommandResponse>
+    public record ReConfirmMailCodeCommandRequest : ReConfirmMailCodeDto, IRequest<Result<ReConfirmMailCodeCommandResponse>>
     {
     }
 }

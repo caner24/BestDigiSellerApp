@@ -4,18 +4,18 @@ using Serilog;
 
 namespace BestDigiSellerApp.User.Api.Consume
 {
-    public class CreateWalletConsume : IConsumer<WalletRequest>
+    public class CreateWalletConsume : IConsumer<WalletRequestDto>
     {
         private readonly WalletClient _client;
         public CreateWalletConsume(WalletClient client)
         {
             _client = client;
         }
-        public async Task Consume(ConsumeContext<WalletRequest> context)
+        public async Task Consume(ConsumeContext<WalletRequestDto> context)
         {
-            Log.Information("CreateWalletConsume has started . . .");
-            var ibanAdress = await _client.CreateWalletAsync(context.Message);
-            Log.Information($"CreateWalletConsume has fisihed. Iban adress ->{ibanAdress.Iban} . . .");
+            Log.Information("CreateWalletConsume has been started . . .");
+            await _client.CreateWalletAsync(context.Message);
+            await Task.CompletedTask;
         }
     }
 }

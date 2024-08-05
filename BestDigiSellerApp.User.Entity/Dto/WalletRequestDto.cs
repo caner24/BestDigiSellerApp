@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.User.Entity.Dto
 {
-    public record EmailConfirmationDto
+    public record WalletRequestDto
     {
-        public string EmailAdress { get; init; }
-        public string ConfirmationLink { get; init; }
+        public string UserEmail { get; init; }
+        public int Currency { get; init; }
     }
 }

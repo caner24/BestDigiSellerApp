@@ -9,6 +9,6 @@ namespace BestDigiSellerApp.User.Application.User.Commands.Response
 {
     public record LoginUserCommandResponse : TokenDto
     {
-        public bool IsTwoStepVerification { get; init; }
+
     }
 }

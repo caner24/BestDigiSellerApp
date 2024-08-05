@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentResults;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.Wallet.Entity.Exceptions
 {
-    public class IbanNotFoundException : BaseException
+    public class NotEnoughtMoneyResult : Error
     {
-        public IbanNotFoundException() : base("The iban was not found")
+        public NotEnoughtMoneyResult() : base("Your current amount that want sent under than sent.")
         {
         }
     }

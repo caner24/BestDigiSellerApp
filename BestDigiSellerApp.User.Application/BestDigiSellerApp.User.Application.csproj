@@ -17,4 +17,8 @@
     <ProjectReference Include="..\BestDigiSellerApp.User.Entity\BestDigiSellerApp.User.Entity.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="User\Queries\Response\" />
+  </ItemGroup>
+
 </Project>

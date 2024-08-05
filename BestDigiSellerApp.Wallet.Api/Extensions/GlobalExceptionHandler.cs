@@ -15,7 +15,6 @@ namespace BestDigiSellerApp.Wallet.Api.Extensions
 
                 var statusCode = exception switch
                 {
-                    IbanNotFoundException => StatusCodes.Status404NotFound,
                     ValidationException => StatusCodes.Status422UnprocessableEntity,
                     _ => StatusCodes.Status500InternalServerError
                 };
@@ -27,10 +26,6 @@ namespace BestDigiSellerApp.Wallet.Api.Extensions
                     Title = "An exception happened",
                     Type = exception.GetType().Name,
                 };
-                foreach (DictionaryEntry item in exception.Data)
-                {
-                    exceptionDetail.Extensions.Add(item.Key.ToString(), item.Value.ToString());
-                }
                 httpContext.Response.StatusCode = statusCode;
                 await httpContext.Response.WriteAsJsonAsync(exceptionDetail);
                 return true;

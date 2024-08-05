@@ -3,6 +3,7 @@ using BestDigiSellerApp.User.Application.User.Commands.Request;
 using BestDigiSellerApp.User.Application.User.Commands.Response;
 using BestDigiSellerApp.User.Data.Abstract;
 using BestDigiSellerApp.User.Entity.Exceptions;
+using FluentResults;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -12,34 +13,37 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.User.Application.User.Handlers.CommandHandlers
 {
-    public class LoginTwoStepCommandHandler : IRequestHandler<LoginTwoStepCommandRequest, LoginTwoStepCommandResponse>
+    public class LoginTwoStepCommandHandler : IRequestHandler<LoginTwoStepCommandRequest, Result<LoginTwoStepCommandResponse>>
     {
         private readonly IUserDal _userDal;
         public LoginTwoStepCommandHandler(IUserDal userDal)
         {
             _userDal = userDal;
         }
-        public async Task<LoginTwoStepCommandResponse> Handle(LoginTwoStepCommandRequest request, CancellationToken cancellationToken)
+        public async Task<Result<LoginTwoStepCommandResponse>> Handle(LoginTwoStepCommandRequest request, CancellationToken cancellationToken)
         {
             var loginResult = await _userDal.LoginTwoStep(request);
-            if (!loginResult.Succeeded)
+            if (loginResult.IsFailed)
+                return Result.Fail(loginResult.Errors);
+
+            if (!loginResult.Value.Succeeded)
             {
-                if (loginResult.IsLockedOut)
+                if (loginResult.Value.IsLockedOut)
                 {
-                    throw new UserLockedOutException();
+                    return new UserLockedOutResult();
                 }
                 else
                 {
-                    return new LoginTwoStepCommandResponse { IsWrong2Step = true };
+                    return new WrongTwoStepCodeResult();
                 }
             }
             var bearerDetails = await _userDal.CreateToken(true);
-            return new LoginTwoStepCommandResponse
+            return Result.Ok(new LoginTwoStepCommandResponse
             {
-                AccessToken = bearerDetails.AccessToken,
-                ExpireTime = bearerDetails.ExpireTime,
-                RefreshToken = bearerDetails.RefreshToken
-            };
+                AccessToken = bearerDetails.Value.AccessToken,
+                ExpireTime = bearerDetails.Value.ExpireTime,
+                RefreshToken = bearerDetails.Value.RefreshToken
+            });
         }
     }
 }

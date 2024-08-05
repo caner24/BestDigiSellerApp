@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.User.Application.User.Commands.Request
 {
-    public record RegisterUserCommandRequest : UserForRegistrationDto, IRequest<RegisterUserCommandResponse>
+    public record RegisterUserCommandRequest : UserForRegistrationDto, IRequest<FluentResults.Result<RegisterUserCommandResponse>>
     {
 
     }

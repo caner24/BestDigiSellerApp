@@ -4,6 +4,7 @@ using BestDigiSellerApp.User.Application.User.Commands.Response;
 using BestDigiSellerApp.User.Data.Abstract;
 using BestDigiSellerApp.User.Entity.Dto;
 using BestDigiSellerApp.User.Entity.Exceptions;
+using FluentResults;
 using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
@@ -16,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.User.Application.User.Handlers.CommandHandlers
 {
-    public class LoginUserCommandHandler : IRequestHandler<LoginUserCommandRequest, LoginUserCommandResponse>
+    public class LoginUserCommandHandler : IRequestHandler<LoginUserCommandRequest, Result<LoginUserCommandResponse>>
     {
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly IUserDal _userDal;
@@ -25,37 +26,41 @@ namespace BestDigiSellerApp.User.Application.User.Handlers.CommandHandlers
             _publishEndpoint = publishEndpoint;
             _userDal = userDal;
         }
-        public async Task<LoginUserCommandResponse> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
+        public async Task<Result<LoginUserCommandResponse>> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
         {
             var user = await _userDal.LogInUser(request);
-            if (!user.Succeeded)
+
+            if (user.IsFailed)
+                return Result.Fail(user.Errors);
+
+            if (!user.Value.Succeeded)
             {
-                if (user.IsLockedOut)
+                if (user.Value.IsLockedOut)
                 {
-                    throw new UserLockedOutException();
+                    return new UserLockedOutResult();
                 }
-                else if (user.IsNotAllowed)
+                else if (user.Value.IsNotAllowed)
                 {
-                    throw new UserNotAllowedException();
+                    return new UserNotAllowedResult();
                 }
-                else if (user.RequiresTwoFactor)
+                else if (user.Value.RequiresTwoFactor)
                 {
                     var twoStepTokenCode = await _userDal.GenerateTwoStep(request.UserEmail);
-                    await _publishEndpoint.Publish<TwoStepLoginDto>(new TwoStepLoginDto { Email = request.UserEmail, Token = twoStepTokenCode });
-                    return new LoginUserCommandResponse { IsTwoStepVerification = true };
+                    await _publishEndpoint.Publish<TwoStepLoginDto>(new TwoStepLoginDto { Email = request.UserEmail, Token = twoStepTokenCode.Value });
+                    return new TwoStepRequiredResult();
                 }
                 else
                 {
-                    throw new UserNotAllowedException();
+                    return new UserNotAllowedResult();
                 }
             }
             var bearerDetails = await _userDal.CreateToken(true);
-            return new LoginUserCommandResponse
+            return Result.Ok(new LoginUserCommandResponse
             {
-                AccessToken = bearerDetails.AccessToken,
-                ExpireTime = bearerDetails.ExpireTime,
-                RefreshToken = bearerDetails.RefreshToken
-            };
+                AccessToken = bearerDetails.Value.AccessToken,
+                ExpireTime = bearerDetails.Value.ExpireTime,
+                RefreshToken = bearerDetails.Value.RefreshToken
+            });
         }
     }
 }

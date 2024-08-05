@@ -24,6 +24,9 @@ public class UserController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginUserCommandRequest loginUserCommandRequest)
     {
         var response = await _mediator.Send(loginUserCommandRequest);
+        if (!response.IsSuccess)
+            return BadRequest(response.Errors);
+
         return Ok(response);
     }
 
@@ -31,8 +34,11 @@ public class UserController : ControllerBase
     public async Task<IActionResult> Register([FromBody] RegisterUserCommandRequest registerUserCommandRequest)
     {
         var response = await _mediator.Send(registerUserCommandRequest);
-        var confirmationLink = Url.Action(nameof(ConfirmEmail), "Auth", new ConfirmMailQueryRequest { Token = response.ConfirmationToken, Email = response.Email }, Request.Scheme);
-        await _publishEndpoint.Publish<EmailConfirmationDto>(new EmailConfirmationDto { ConfirmationLink = confirmationLink });
+        if (response.IsFailed)
+            return StatusCode(StatusCodes.Status422UnprocessableEntity, response.Errors);
+
+        var confirmationLink = Url.Action(nameof(ConfirmEmail), "User", new ConfirmMailQueryRequest { Token = response.Value.ConfirmationToken, Email = response.Value.Email }, Request.Scheme);
+        await _publishEndpoint.Publish<EmailConfirmationDto>(new EmailConfirmationDto { ConfirmationLink = confirmationLink, EmailAdress = registerUserCommandRequest.Email });
         return StatusCode(201);
     }
 
@@ -41,8 +47,11 @@ public class UserController : ControllerBase
     public async Task<IActionResult> ReSendConfirmationToken([FromBody] ReConfirmMailCodeCommandRequest resendConfirmationEmailRequest)
     {
         var response = await _mediator.Send(resendConfirmationEmailRequest);
-        var confirmationLink = Url.Action(nameof(ConfirmEmail), "Auth", new { response.Email, response.Token, }, Request.Scheme);
-        await _publishEndpoint.Publish<EmailConfirmationDto>(new EmailConfirmationDto { ConfirmationLink = confirmationLink });
+        if (!response.IsSuccess)
+            return BadRequest(response.Errors);
+
+        var confirmationLink = Url.Action(nameof(ConfirmEmail), "User", new { response.Value.Email, response.Value.Token, }, Request.Scheme);
+        await _publishEndpoint.Publish<EmailConfirmationDto>(new EmailConfirmationDto { ConfirmationLink = confirmationLink, EmailAdress = resendConfirmationEmailRequest.EmailAdress });
         return Ok();
     }
 
@@ -50,15 +59,19 @@ public class UserController : ControllerBase
     public async Task<IActionResult> ConfirmEmail([FromRoute] ConfirmMailQueryRequest confirmMailQueryRequest)
     {
         var response = await _mediator.Send(confirmMailQueryRequest);
-        await _publishEndpoint.Publish<WalletRequest>(new WalletRequest { Currency = Currency.TRY, UserId = confirmMailQueryRequest.Email });
-
-        return Content($"Your email isConfirm -> {response}");
+        if (!response.IsSuccess)
+            return BadRequest(response.Errors);
+        await _publishEndpoint.Publish<WalletRequestDto>(new WalletRequestDto { Currency = 2, UserEmail = confirmMailQueryRequest.Email });
+        return Content($"Your email isConfirmed");
     }
 
     [HttpPost("loginTwoStep")]
     public async Task<IActionResult> LoginTwoStep([FromBody] LoginTwoStepCommandRequest loginTwoStepCommandRequest)
     {
         var response = await _mediator.Send(loginTwoStepCommandRequest);
+        if (!response.IsSuccess)
+            return BadRequest(response.Errors);
+
         return Ok(response);
     }
 }

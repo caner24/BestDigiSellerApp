@@ -9,7 +9,6 @@ namespace BestDigiSellerApp.User.Application.User.Commands.Response
 {
     public record LoginTwoStepCommandResponse : TokenDto
     {
-        public bool IsWrong2Step { get; init; }
 
     }
 }

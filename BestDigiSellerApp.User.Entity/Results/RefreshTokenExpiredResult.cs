@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentResults;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.User.Entity.Exceptions
 {
-    public abstract class BaseException : Exception
+    public class RefreshTokenExpiredResult : Error
     {
-        protected BaseException(string exceptionMessage) : base(exceptionMessage)
+        public RefreshTokenExpiredResult() : base("Your refresh token is expired")
         {
         }
     }

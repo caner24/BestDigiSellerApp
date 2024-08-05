@@ -1,7 +1,7 @@
 ﻿
 using BestDigiSellerApp.User.Application.User.Queries.Request;
-using BestDigiSellerApp.User.Application.User.Queries.Response;
 using BestDigiSellerApp.User.Data.Abstract;
+using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using System;
@@ -13,26 +13,26 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.User.Application.User.Handlers.QueryHandlers
 {
-    public class ConfirmMailQueryHandler : IRequestHandler<ConfirmMailQueryRequest, ConfirmMailQueryResponse>
+    public class ConfirmMailQueryHandler : IRequestHandler<ConfirmMailQueryRequest, Result>
     {
         private readonly IUserDal _userDal;
         public ConfirmMailQueryHandler(IUserDal userDal)
         {
             _userDal = userDal;
         }
-        public async Task<ConfirmMailQueryResponse> Handle(ConfirmMailQueryRequest request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(ConfirmMailQueryRequest request, CancellationToken cancellationToken)
         {
             var confirmMail = await _userDal.ConfirmEmailToken(request.Email, request.Token);
-            if (!confirmMail.Succeeded)
+            if (!confirmMail.Value.Succeeded)
             {
-                ValidationException ex = new ValidationException();
-                foreach (var item in confirmMail.Errors)
+                var result = new Result();
+                foreach (var error in confirmMail.Value.Errors)
                 {
-                    ex.Data.Add(item.Code, item.Description);
+                    result.WithError(new Error(error.Description).WithMetadata("Code", error.Code));
                 }
-                throw ex;
+                return result;
             }
-            return new ConfirmMailQueryResponse { IsOk = true };
+            return Result.Ok();
         }
     }
 }

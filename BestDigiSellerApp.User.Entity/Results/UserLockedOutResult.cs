@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentResults;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.User.Entity.Exceptions
 {
-    public class SessionException : BaseException
+    public class UserLockedOutResult : Error
     {
-        public SessionException() : base("Session was not found")
+        public UserLockedOutResult() : base("You've locked out.")
         {
-
         }
     }
 }

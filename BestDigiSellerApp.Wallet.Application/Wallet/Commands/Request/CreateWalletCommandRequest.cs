@@ -1,6 +1,7 @@
 ﻿
 using BestDigiSellerApp.Wallet.Application.Wallet.Commands.Response;
 using BestDigiSellerApp.Wallet.Entity.Dto;
+using FluentResults;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.Wallet.Application.Wallet.Commands.Request
 {
-    public record CreateWalletCommandRequest : CreateWalletDto, IRequest<CreateWalletCommandResponse>
+    public record CreateWalletCommandRequest : CreateWalletDto, IRequest<Result<CreateWalletCommandResponse>>
     {
 
     }
