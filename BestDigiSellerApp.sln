@@ -107,9 +107,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BestDigiSellerApp.Wallet.Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BestDigiSellerApp.Wallet.Entity", "BestDigiSellerApp.Wallet.Entity\BestDigiSellerApp.Wallet.Entity.csproj", "{FB59696F-640B-45C3-A707-D536050F1FC2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BestDigiSellerApp.User.Application", "BestDigiSellerApp.User.Application\BestDigiSellerApp.User.Application.csproj", "{9E1EA788-415E-4341-88E2-65C5BFAF6290}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BestDigiSellerApp.User.Application", "BestDigiSellerApp.User.Application\BestDigiSellerApp.User.Application.csproj", "{9E1EA788-415E-4341-88E2-65C5BFAF6290}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BestDigiSellerApp.Wallet.Application", "BestDigiSellerApp.Wallet.Application\BestDigiSellerApp.Wallet.Application.csproj", "{85C9E015-FB52-4199-AD39-ABA6EF64B0C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BestDigiSellerApp.Wallet.Application", "BestDigiSellerApp.Wallet.Application\BestDigiSellerApp.Wallet.Application.csproj", "{85C9E015-FB52-4199-AD39-ABA6EF64B0C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BestDigiSellerApp.Stripe.Application", "BestDigiSellerApp.Stripe.Application\BestDigiSellerApp.Stripe.Application.csproj", "{3378A501-7AA5-4BF5-84BD-DF9756F6868B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -269,6 +271,10 @@ Global
 		{85C9E015-FB52-4199-AD39-ABA6EF64B0C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85C9E015-FB52-4199-AD39-ABA6EF64B0C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85C9E015-FB52-4199-AD39-ABA6EF64B0C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3378A501-7AA5-4BF5-84BD-DF9756F6868B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3378A501-7AA5-4BF5-84BD-DF9756F6868B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3378A501-7AA5-4BF5-84BD-DF9756F6868B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3378A501-7AA5-4BF5-84BD-DF9756F6868B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -327,6 +333,7 @@ Global
 		{FB59696F-640B-45C3-A707-D536050F1FC2} = {2949750E-3F3B-427E-A44F-25ECCC36C3B0}
 		{9E1EA788-415E-4341-88E2-65C5BFAF6290} = {90A13375-976A-4D35-889A-9477FC66AD45}
 		{85C9E015-FB52-4199-AD39-ABA6EF64B0C0} = {90A13375-976A-4D35-889A-9477FC66AD45}
+		{3378A501-7AA5-4BF5-84BD-DF9756F6868B} = {90A13375-976A-4D35-889A-9477FC66AD45}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DFBD108C-5B75-4224-B2C6-D701316D684C}
