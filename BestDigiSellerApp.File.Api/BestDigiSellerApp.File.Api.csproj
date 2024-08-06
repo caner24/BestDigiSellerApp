@@ -14,4 +14,8 @@
     <ProjectReference Include="..\BestDigiSellerApp.Aspire\BestDigiSellerApp.Aspire.ServiceDefaults\BestDigiSellerApp.Aspire.ServiceDefaults.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Media\" />
+  </ItemGroup>
+
 </Project>
