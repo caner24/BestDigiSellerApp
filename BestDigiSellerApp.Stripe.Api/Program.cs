@@ -1,29 +1,37 @@
+using BestDigiSeller.JWT;
+using BestDigiSellerApp.Stripe.Api.Extensions;
+using Stripe;
+using System.Reflection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-
-// Add services to the container.
-
+StripeConfiguration.ApiKey = builder.Configuration["StripeApiKey"];
+builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.CustomCorsPolicy();
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Load("BestDigiSellerApp.Stripe.Application")));
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.ServiceLifetimeOptions();
+builder.Services.CustomCorsPolicy();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.SwaggerGenSettings();
 
 var app = builder.Build();
-
 app.MapDefaultEndpoints();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+app.UseExceptionHandler();
+app.UseCors("CustomCorsPolicy");
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

@@ -27,19 +27,13 @@ namespace BestDigiSellerApp.Wallet.Application.Wallet.Handlers.CommandHandlers
         }
         public async Task<Result<CreateWalletCommandResponse>> Handle(CreateWalletCommandRequest request, CancellationToken cancellationToken)
         {
-            var currency = request.Currency switch
-            {
-                Currency.TRY => "TR",
-                Currency.USD => "US",
-                Currency.EUR => "EUR"
-            };
             var isWalletExist = await _unitOfWork.WalletDal.Get(x => x.UserId == request.UserEmail).Include(x => x.WalletDetails).AsNoTracking().FirstOrDefaultAsync();
             if (isWalletExist is not null)
             {
                 if (isWalletExist.WalletDetails.Exists(x => x.Currency == request.Currency))
                     return Result.Fail(new AlreadyHaveCurrencyAccountResult());
 
-                var iban = GenerateRandomIban(currency);
+                var iban = GenerateRandomIban("TR");
                 isWalletExist.WalletDetails.Add(new WalletDetail { Currency = request.Currency, Iban = iban });
                 await _unitOfWork.WalletDal.UpdateAsync(isWalletExist);
                 return new CreateWalletCommandResponse { Iban = iban, UserEmail = request.UserEmail };
@@ -47,7 +41,7 @@ namespace BestDigiSellerApp.Wallet.Application.Wallet.Handlers.CommandHandlers
             else
             {
                 var wallet = _mapper.Map<BestDigiSellerApp.Wallet.Entity.Wallet>(request);
-                var iban = GenerateRandomIban(currency);
+                var iban = GenerateRandomIban("TR");
                 wallet.WalletDetails.Add(new WalletDetail { Currency = request.Currency, Iban = iban });
                 await _unitOfWork.WalletDal.AddAsync(wallet);
                 return new CreateWalletCommandResponse { Iban = iban, UserEmail = request.UserEmail };

@@ -8,8 +8,6 @@ namespace BestDigiSellerApp.Wallet.Entity.Enums
 {
     public enum Currency
     {
-        EUR,
-        USD,
         TRY,
     }
 }
