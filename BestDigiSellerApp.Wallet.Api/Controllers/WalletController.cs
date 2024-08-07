@@ -28,7 +28,7 @@ namespace BestDigiSellerApp.Wallet.Api.Controllers
                 return BadRequest(response.Errors);
 
             await _publishEndpoint.Publish<WalletCreatedDto>(new WalletCreatedDto { UserEmail = response.Value.UserEmail, Currency = response.Value.Currency, Iban = response.Value.Iban });
-            return StatusCode(201, response);
+            return StatusCode(201, response.Value);
         }
     }
 }

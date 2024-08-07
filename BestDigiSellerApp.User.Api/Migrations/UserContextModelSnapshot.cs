@@ -91,6 +91,25 @@ namespace BestDigiSellerApp.User.Api.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "294b1b78-3268-4226-8e86-87c63a6868b0",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "a3c6d198-4657-40ac-857e-735ecf8d3098",
+                            Email = "admin@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@GMAIL.COM",
+                            NormalizedUserName = "ADMIN24",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAebH5s276vDLw4AY39y7qQhT77DaChPdzDfIhN0cGA1mKQUcUUpdwLrENESWE4taQ==",
+                            PhoneNumberConfirmed = false,
+                            RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SecurityStamp = "a4107b4a-6b3c-46be-a1e2-33805c5dc03f",
+                            TwoFactorEnabled = false,
+                            UserName = "admin24"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -118,6 +137,14 @@ namespace BestDigiSellerApp.User.Api.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "c33bab16-7a80-4c43-b680-e02cc314af71",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -205,6 +232,13 @@ namespace BestDigiSellerApp.User.Api.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "294b1b78-3268-4226-8e86-87c63a6868b0",
+                            RoleId = "c33bab16-7a80-4c43-b680-e02cc314af71"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>

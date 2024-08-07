@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.Product.Entity
 {
-    public class Photo: IEntity
+    public class Photo : IEntity
     {
         public Photo()
         {
             Products = new HashSet<Product>();
         }
         public int Id { get; set; }
+        public string? Url { get; set; }
         public HashSet<Product> Products { get; set; }
     }
 }
