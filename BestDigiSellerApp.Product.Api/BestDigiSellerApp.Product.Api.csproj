@@ -10,6 +10,11 @@
     <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
     <PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" Version="8.1.0" />
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="MassTransit" Version="8.2.3" />
+    <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.3" />
     <PackageReference Include="MediatR" Version="12.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
@@ -26,6 +31,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BestDigiSeller.JWT\BestDigiSeller.JWT.csproj" />
     <ProjectReference Include="..\BestDigiSellerApp.Aspire\BestDigiSellerApp.Aspire.ServiceDefaults\BestDigiSellerApp.Aspire.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\BestDigiSellerApp.Product.Application\BestDigiSellerApp.Product.Application.csproj" />
     <ProjectReference Include="..\BestDigiSellerApp.Product.Data\BestDigiSellerApp.Product.Data.csproj" />
   </ItemGroup>
 

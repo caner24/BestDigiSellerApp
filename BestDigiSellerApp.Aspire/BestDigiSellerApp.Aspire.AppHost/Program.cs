@@ -12,9 +12,13 @@ var redis = builder.AddRedis("redis");
 
 builder.AddProject<Projects.BestDigiSellerApp_Ocelot>("bestdigisellerapp-ocelot");
 builder.AddProject<Projects.BestDigiSellerApp_Discount_Api>("bestdigisellerapp-discount-api");
-builder.AddProject<Projects.BestDigiSellerApp_File_Api>("bestdigisellerapp-file-api");
-builder.AddProject<Projects.BestDigiSellerApp_Product_Api>("bestdigisellerapp-product-api").WithReference(redis).WithEnvironment("ValidIssuer", validIssuer)
+
+var fileApiService = builder.AddProject<Projects.BestDigiSellerApp_File_Api>("bestdigisellerapp-file-api").WithEnvironment("ValidIssuer", validIssuer)
     .WithEnvironment("SecretKey", secretKey);
+
+builder.AddProject<Projects.BestDigiSellerApp_Product_Api>("bestdigisellerapp-product-api").WithReference(redis).WithEnvironment("ValidIssuer", validIssuer)
+    .WithEnvironment("SecretKey", secretKey).WithReference(fileApiService);
+
 builder.AddProject<Projects.BestDigiSellerApp_Stripe_Api>("bestdigisellerapp-stripe-api").WithEnvironment("ValidIssuer", validIssuer)
     .WithEnvironment("SecretKey", secretKey);
 

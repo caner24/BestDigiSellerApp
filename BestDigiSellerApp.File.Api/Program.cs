@@ -1,29 +1,58 @@
-var builder = WebApplication.CreateBuilder(args);
+using BestDigiSellerApp.File.Api.Extensions;
+using Serilog;
+using BestDigiSeller.JWT;
+using Microsoft.Extensions.FileProviders;
 
-builder.AddServiceDefaults();
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-app.MapDefaultEndpoints();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+Log.Logger = new LoggerConfiguration()
+        .WriteTo.Console()/*WriteTo.File(DateTime.UtcNow.ToString("dd/mm/yy"))*/
+        .CreateLogger();
+try
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+
+    Log.Information("Web host is being started  . . .");
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.AddServiceDefaults();
+
+    builder.Services.AddJwtAuthentication(builder.Configuration);
+    builder.Services.AddControllers();
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.SwaggerGenSettings();
+    builder.Services.AddApiVersioning();
+    var app = builder.Build();
+
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(
+           Path.Combine(builder.Environment.ContentRootPath, "Media")),
+        RequestPath = "/Files"
+    });
+    app.MapDefaultEndpoints();
+
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+    app.UseHttpsRedirection();
+
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    app.MapControllers();
+
+    app.Run();
 }
 
-app.UseHttpsRedirection();
+catch (Exception ex)
+{
+    Log.Fatal(ex, "An exception happened while project was started.");
 
-app.UseAuthorization();
+}
+finally
+{
+    Log.CloseAndFlush();
 
-app.MapControllers();
-
-app.Run();
+}

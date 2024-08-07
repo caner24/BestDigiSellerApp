@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BestDigiSellerApp.File.Api.Controllers;
@@ -7,6 +8,7 @@ namespace BestDigiSellerApp.File.Api.Controllers;
 public class FileController : ControllerBase
 {
     [HttpPost("upload")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Upload(List<IFormFile> files)
     {
         if (!ModelState.IsValid)
@@ -31,9 +33,9 @@ public class FileController : ControllerBase
 
                 uploadedFiles.Add(new
                 {
-                    file = file.FileName,
-                    path = path,
-                    size = file.Length
+                    File = file.FileName,
+                    Path = path,
+                    Size = file.Length
                 });
             }
         }

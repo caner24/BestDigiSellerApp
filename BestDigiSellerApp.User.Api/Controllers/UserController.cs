@@ -27,7 +27,7 @@ public class UserController : ControllerBase
         if (!response.IsSuccess)
             return BadRequest(response.Errors);
 
-        return Ok(response);
+        return Ok(response.Value);
     }
 
     [HttpPost("register")]
@@ -72,6 +72,6 @@ public class UserController : ControllerBase
         if (!response.IsSuccess)
             return BadRequest(response.Errors);
 
-        return Ok(response);
+        return Ok(response.Value);
     }
 }
