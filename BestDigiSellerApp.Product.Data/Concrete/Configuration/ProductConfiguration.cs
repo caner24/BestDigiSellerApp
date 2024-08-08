@@ -13,6 +13,8 @@ namespace BestDigiSellerApp.Product.Data.Concrete.Configuration
         public void Configure(EntityTypeBuilder<Entity.Product> builder)
         {
             builder.Property(x => x.Concurrency).IsConcurrencyToken();
+            builder.Navigation(x => x.ProductDetail).AutoInclude();
+            builder.Navigation(x => x.Photos).AutoInclude();
         }
     }
 }

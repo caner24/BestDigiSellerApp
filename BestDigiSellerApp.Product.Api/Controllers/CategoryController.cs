@@ -105,13 +105,13 @@ namespace BestDigiSellerApp.Product.Api.Controllers
         {
             var links = new List<Link>
             {
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(GetCategoriesById), values: new { id, fields }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(GetCategoriesById), values: new { Id=id}),
                 "self",
                 "GET"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(DeleteCategory), values: new { id }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(DeleteCategory), values: new { Id=id }),
                 "delete_product",
                 "DELETE"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(UpdateCategory), values: new { id }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(UpdateCategory), values: new {  }),
         "update_product",
         "PUT")
     };
