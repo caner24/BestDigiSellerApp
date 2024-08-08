@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.Product.Application.Validation.FluentValidation
 {
-    public class CreateProductDtoValidator : AbstractValidator<ProductForCreateDto>
+    public class UpdateProductDtoValidator : AbstractValidator<ProductForUpdateDto>
     {
-        public CreateProductDtoValidator()
+        public UpdateProductDtoValidator()
         {
+            RuleFor(x => x.ProductId).NotNull().NotEmpty().WithMessage("ProductId must be not null !.");
             RuleFor(x => x.Name).NotEmpty().NotNull().WithMessage("Name must be not null and not empty.");
             RuleFor(x => x.Price).GreaterThan(0).WithMessage("Min price must be greater than 0");
             RuleFor(x => x.Stock).GreaterThan(0).WithMessage("Min stock must be greater than 0");
@@ -20,7 +21,5 @@ namespace BestDigiSellerApp.Product.Application.Validation.FluentValidation
             RuleFor(x => x.FormFiles).NotNull().NotEmpty().WithMessage("At least one photo req !.");
 
         }
-
-
     }
 }

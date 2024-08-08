@@ -13,9 +13,9 @@ namespace BestDigiSellerApp.Product.Entity.Helpers
             OrderBy = "Name";
         }
 
-        public decimal MinPrice { get; set; }
-        public decimal MaxPrice { get; set; }
+        public double MinPrice { get; set; }
+        public double MaxPrice { get; set; }
         public bool ValidYearRange => MaxPrice >= MinPrice;
-        public string Name { get; set; }
+        public string? Name { get; set; }
     }
 }

@@ -15,11 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Product\Handlers\QueryHandlers\" />
-    <Folder Include="Product\Queries\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\BestDigiSellerApp.Product.Data\BestDigiSellerApp.Product.Data.csproj" />
     <ProjectReference Include="..\BestDigiSellerApp.Product.Entity\BestDigiSellerApp.Product.Entity.csproj" />
   </ItemGroup>

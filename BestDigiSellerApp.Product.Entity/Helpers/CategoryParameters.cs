@@ -12,6 +12,7 @@ namespace BestDigiSellerApp.Product.Entity.Helpers
         {
             OrderBy = "Name";
         }
-        public string Name { get; set; }
+        public string? Name { get; set; }
+        public string? Tag { get; set; }
     }
 }

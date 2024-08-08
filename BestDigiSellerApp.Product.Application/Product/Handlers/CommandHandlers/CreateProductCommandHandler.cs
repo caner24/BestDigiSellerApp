@@ -54,7 +54,6 @@ namespace BestDigiSellerApp.Product.Application.Product.Handlers.CommandHandlers
             var addedProduct = await _unitOfWork.ProductDal.AddAsync(product);
             return Result.Ok(new CreateProductCommandResponse { Id = addedProduct.Id });
 
-            throw new NotImplementedException();
         }
     }
 }

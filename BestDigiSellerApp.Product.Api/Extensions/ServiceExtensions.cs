@@ -6,7 +6,9 @@ using BestDigiSellerApp.Product.Application.Product.Commands.Request;
 using BestDigiSellerApp.Product.Application.Validation.FluentValidation;
 using BestDigiSellerApp.Product.Data.Abstract;
 using BestDigiSellerApp.Product.Data.Concrete;
+using BestDigiSellerApp.Product.Entity;
 using BestDigiSellerApp.Product.Entity.Dto;
+using BestDigiSellerApp.Product.Entity.Helpers;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -25,6 +27,11 @@ namespace BestDigiSellerApp.Product.Api.Extensions
                 b.MigrationsAssembly("BestDigiSellerApp.Product.Api");
             }
            ));
+        }
+
+        public static void ConfigureRedisOutputCache(this IServiceCollection services, IConfiguration config)
+        {
+            services.AddStackExchangeRedisOutputCache(_ => _.InstanceName = config["redis"]);
         }
         public static void CreateFileClient(this IServiceCollection services)
         {
@@ -84,6 +91,20 @@ namespace BestDigiSellerApp.Product.Api.Extensions
     });
             });
         }
+
+        public static void ConfigureCors(this IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder =>
+                    builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                 .WithExposedHeaders("X-Pagination")
+
+                );
+            });
+        }
         public static void ServiceLifetimeOptions(this IServiceCollection services)
         {
             services.AddScoped<ValidationFilterAttribute>();
@@ -94,8 +115,19 @@ namespace BestDigiSellerApp.Product.Api.Extensions
                 return context?.HttpContext?.User ?? new ClaimsPrincipal();
             });
 
+            services.AddScoped<IDataShaper<BestDigiSellerApp.Product.Entity.Product>, DataShaper<BestDigiSellerApp.Product.Entity.Product>>();
+            services.AddScoped<ISortHelper<BestDigiSellerApp.Product.Entity.Product>, SortHelper<BestDigiSellerApp.Product.Entity.Product>>();
+            services.AddScoped<IDataShaper<Category>, DataShaper<Category>>();
+            services.AddScoped<ISortHelper<Category>, SortHelper<Category>>();
+
+
             services.AddScoped<IValidator<CreateProductCommandRequest>, CreateProductDtoValidator>();
             services.AddScoped<IValidator<CreateCategoryCommandRequest>, CreateCategoryDtoValidator>();
+            services.AddScoped<IValidator<DeleteProductCommandRequest>, DeleteProductDtoValidator>();
+            services.AddScoped<IValidator<UpdateProductCommandRequest>, UpdateProductDtoValidator>();
+            services.AddScoped<IValidator<DeleteCategoryCommandRequest>, DeleteCategoryDtoValidator>();
+            services.AddScoped<IValidator<UpdateCategoryCommandRequest>, UpdateCategoryDtoValidator>();
+
             services.AddScoped<IProductDal, ProductDal>();
             services.AddScoped<ICategoryDal, CategoryDal>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();

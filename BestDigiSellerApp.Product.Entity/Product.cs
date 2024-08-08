@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.Product.Entity
 {
-    public class Product: IEntity
+    public class Product : IEntity
     {
         public Product()
         {
@@ -16,6 +16,7 @@ namespace BestDigiSellerApp.Product.Entity
         }
         public Guid Id { get; set; }
         public string? Name { get; set; }
+        public byte[] Concurrency { get; set; }
         public HashSet<Photo> Photos { get; set; }
         public ProductDetail? ProductDetail { get; set; }
         public HashSet<Category> Categories { get; set; }
