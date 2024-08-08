@@ -2,8 +2,10 @@
 using BestDigiSellerApp.Product.Application.Product.Commands.Response;
 using BestDigiSellerApp.Product.Data.Abstract;
 using BestDigiSellerApp.Product.Entity.Dto;
+using BestDigiSellerApp.Product.Entity.Results;
 using FluentResults;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +23,14 @@ namespace BestDigiSellerApp.Product.Application.Product.Handlers.CommandHandlers
             _mediator = mediator;
             _unitOfWork = unitOfWork;
         }
-        public Task<Result> Handle(DeleteProductCommandRequest request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(DeleteProductCommandRequest request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var product = await _unitOfWork.ProductDal.Get(x => x.Id == request.ProductId).FirstOrDefaultAsync();
+            if (product == null)
+                return Result.Fail(new ProductNotFoundResult());
+
+            await _unitOfWork.ProductDal.DeleteAsync(product);
+            return Result.Ok();
         }
     }
 }

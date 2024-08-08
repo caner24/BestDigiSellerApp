@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.Product.Entity.Dto
 {
-    public class ProductForUpdateDto
+    public record ProductForUpdateDto
     {
         public Guid ProductId { get; set; }
         public string? Name { get; init; }
@@ -15,5 +16,6 @@ namespace BestDigiSellerApp.Product.Entity.Dto
         public int Stock { get; init; }
         public double Price { get; init; }
         public List<Guid> CategoryId { get; init; }
+        public List<IFormFile> FormFiles { get; init; }
     }
 }

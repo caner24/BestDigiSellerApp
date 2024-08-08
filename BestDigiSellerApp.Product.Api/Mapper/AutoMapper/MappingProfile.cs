@@ -8,8 +8,11 @@ namespace BestDigiSellerApp.Product.Api.Mapper.AutoMapper
     {
         public MappingProfile()
         {
+
+            CreateMap<CategoryForUpdateDto, Category>();
             CreateMap<CategoryForCreateDto, Category>();
             CreateMap<PhotosForCreateDto, Photo>();
+
             CreateMap<ProductForCreateDto, Product.Entity.Product>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
          .ForMember(dest => dest.ProductDetail, opt => opt.MapFrom(src => new ProductDetail
@@ -19,6 +22,22 @@ namespace BestDigiSellerApp.Product.Api.Mapper.AutoMapper
              Stock = src.Stock,
              Price = src.Price
          }));
+
+            CreateMap<ProductForUpdateDto, Product.Entity.Product>()
+             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+      .ForMember(dest => dest.ProductDetail, opt => opt.MapFrom(src => new ProductDetail
+      {
+          PointPercentage = src.PointPercentage,
+          MaxPoint = src.MaxPoint,
+          Stock = src.Stock,
+          Price = src.Price
+      }));
+
+
+
+
+
+
         }
     }
 }

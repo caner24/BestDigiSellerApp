@@ -21,7 +21,8 @@ try
     builder.Services.AddProblemDetails();
     builder.Services.AddValidatorsFromAssemblyContaining<CreateCategoryDtoValidator>();
     builder.Services.CreateFileClient();
-    builder.AddRedisDistributedCache("redis");
+    builder.Services.ConfigureRedisOutputCache(builder.Configuration);
+    builder.Services.ConfigureCors();
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Load("BestDigiSellerApp.Product.Application")));
     builder.Services.AddAutoMapper(typeof(Program));
     builder.Services.VersioningSettings();
@@ -42,6 +43,7 @@ try
         app.UseSwaggerUI();
     }
 
+    app.UseCors("CorsPolicy");
     app.UseExceptionHandler();
     app.UseHttpsRedirection();
     app.UseAuthentication();
