@@ -9,7 +9,7 @@ using Serilog;
 using System.Reflection;
 
 Log.Logger = new LoggerConfiguration()
-        .WriteTo.Console()/*WriteTo.File(DateTime.UtcNow.ToString("dd/mm/yy"))*/
+        .WriteTo.Console()
         .CreateLogger();
 try
 {

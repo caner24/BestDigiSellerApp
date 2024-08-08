@@ -5,9 +5,10 @@ using Aspire.StackExchange.Redis;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using FluentValidation;
+using Newtonsoft.Json.Serialization;
 using BestDigiSellerApp.Product.Application.Validation.FluentValidation;
 Log.Logger = new LoggerConfiguration()
-        .WriteTo.Console()/*WriteTo.File(DateTime.UtcNow.ToString("dd/mm/yy"))*/
+        .WriteTo.Console()
         .CreateLogger();
 try
 {
@@ -26,7 +27,15 @@ try
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Load("BestDigiSellerApp.Product.Application")));
     builder.Services.AddAutoMapper(typeof(Program));
     builder.Services.VersioningSettings();
-    builder.Services.AddControllers();
+    builder.Services.AddControllers(config =>
+    {
+        config.RespectBrowserAcceptHeader = true;
+        config.ReturnHttpNotAcceptable = true;
+    })
+    .AddNewtonsoftJson(opt =>
+        opt.SerializerSettings.ReferenceLoopHandling =
+        Newtonsoft.Json.ReferenceLoopHandling.Ignore
+    );
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.SwaggerGenSettings();
 

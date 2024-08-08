@@ -36,7 +36,7 @@ namespace BestDigiSellerApp.Product.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("Category", (string)null);
                 });
 
             modelBuilder.Entity("BestDigiSellerApp.Product.Entity.Photo", b =>
@@ -52,7 +52,7 @@ namespace BestDigiSellerApp.Product.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Photo");
+                    b.ToTable("Photo", (string)null);
                 });
 
             modelBuilder.Entity("BestDigiSellerApp.Product.Entity.Product", b =>
@@ -71,7 +71,7 @@ namespace BestDigiSellerApp.Product.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Product");
+                    b.ToTable("Product", (string)null);
                 });
 
             modelBuilder.Entity("BestDigiSellerApp.Product.Entity.ProductDetail", b =>
@@ -93,7 +93,7 @@ namespace BestDigiSellerApp.Product.Api.Migrations
 
                     b.HasKey("ProductId");
 
-                    b.ToTable("ProductDetail");
+                    b.ToTable("ProductDetail", (string)null);
                 });
 
             modelBuilder.Entity("CategoryProduct", b =>
@@ -108,7 +108,7 @@ namespace BestDigiSellerApp.Product.Api.Migrations
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("CategoryProduct");
+                    b.ToTable("CategoryProduct", (string)null);
                 });
 
             modelBuilder.Entity("PhotoProduct", b =>
@@ -123,7 +123,7 @@ namespace BestDigiSellerApp.Product.Api.Migrations
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("PhotoProduct");
+                    b.ToTable("PhotoProduct", (string)null);
                 });
 
             modelBuilder.Entity("BestDigiSellerApp.Product.Entity.ProductDetail", b =>

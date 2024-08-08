@@ -62,7 +62,7 @@ public class ProductController : ControllerBase
         var productsWrapper = new LinkCollectionWrapper<BestDigiSellerApp.Product.Entity.Entity>(shapedProducts);
         return Ok(CreateLinksForProduct(productsWrapper));
     }
-    
+
     [HttpGet("getProductById/{ProductId}")]
     [OutputCache(Duration = 10)]
     [AllowAnonymous]
@@ -112,13 +112,13 @@ public class ProductController : ControllerBase
     {
         var links = new List<Link>
         {
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(GetProductById), values: new { id, fields }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(GetProductById), values: new { ProductId =id }),
             "self",
             "GET"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(DeleteProduct), values: new { id }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(DeleteProduct), values: new { ProductId =id }),
             "delete_product",
             "DELETE"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(UpdateProduct), values: new { id }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(UpdateProduct), values: new {  }),
         "update_product",
         "PUT")
     };

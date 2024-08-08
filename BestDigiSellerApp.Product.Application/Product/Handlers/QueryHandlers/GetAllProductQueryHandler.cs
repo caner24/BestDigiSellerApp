@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BestDigiSellerApp.Product.Data.Abstract;
 using BestDigiSellerApp.Product.Data.Concrete;
+using BestDigiSellerApp.Product.Entity.Results;
 
 namespace BestDigiSellerApp.Product.Application.Product.Handlers.QueryHandlers
 {
@@ -26,14 +27,32 @@ namespace BestDigiSellerApp.Product.Application.Product.Handlers.QueryHandlers
         }
         public async Task<Result<PagedList<ShapedEntity>>> Handle(GetAllProductQueryRequest request, CancellationToken cancellationToken)
         {
-            var products = _unitOfWork.ProductDal.GetAll(x => x.ProductDetail.Price >= request.MinPrice && request.MaxPrice <= request.MaxPrice);
-            SearchByName(ref products, request.Name);
-            var sortedProducts = _sortHelper.ApplySort(products, request.OrderBy);
-            var shapedProducts = _dataShaper.ShapeData(sortedProducts, request.Fields);
+            if (request.MaxPrice != 0 && request.MinPrice != 0)
+            {
+                if (!request.ValidPriceRange)
+                    return Result.Fail(new PriceNotValidRange());
+                var products = _unitOfWork.ProductDal.GetAll(x => x.ProductDetail.Price >= request.MinPrice && x.ProductDetail.Price <= request.MaxPrice);
+                SearchByName(ref products, request.Name);
+                var sortedProducts = _sortHelper.ApplySort(products, request.OrderBy);
+                var shapedProducts = _dataShaper.ShapeData(sortedProducts, request.Fields);
 
-            return Result.Ok(PagedList<ShapedEntity>.ToPagedList(shapedProducts,
-         request.PageNumber,
-         request.PageSize));
+                return Result.Ok(PagedList<ShapedEntity>.ToPagedList(shapedProducts,
+             request.PageNumber,
+             request.PageSize));
+            }
+            else
+            {
+                var products = _unitOfWork.ProductDal.GetAll(x => x.ProductDetail.Price >= request.MinPrice);
+                SearchByName(ref products, request.Name);
+                var sortedProducts = _sortHelper.ApplySort(products, request.OrderBy);
+                var shapedProducts = _dataShaper.ShapeData(sortedProducts, request.Fields);
+
+                return Result.Ok(PagedList<ShapedEntity>.ToPagedList(shapedProducts,
+             request.PageNumber,
+             request.PageSize));
+            }
+
+
         }
         private void SearchByName(ref IQueryable<BestDigiSellerApp.Product.Entity.Product> products, string productName)
         {

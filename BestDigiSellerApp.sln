@@ -109,7 +109,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BestDigiSellerApp.Wallet.Ap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BestDigiSellerApp.Stripe.Application", "BestDigiSellerApp.Stripe.Application\BestDigiSellerApp.Stripe.Application.csproj", "{3378A501-7AA5-4BF5-84BD-DF9756F6868B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BestDigiSellerApp.Product.Application", "BestDigiSellerApp.Product.Application\BestDigiSellerApp.Product.Application.csproj", "{7F72C3C8-F7EB-4817-A30B-102D3212A482}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BestDigiSellerApp.Product.Application", "BestDigiSellerApp.Product.Application\BestDigiSellerApp.Product.Application.csproj", "{7F72C3C8-F7EB-4817-A30B-102D3212A482}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BestDigiSellerApp.Basket.Application", "BestDigiSellerApp.Basket.Application\BestDigiSellerApp.Basket.Application.csproj", "{61C5E2EC-BB90-4527-BBF0-CE9F944295BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -269,6 +271,10 @@ Global
 		{7F72C3C8-F7EB-4817-A30B-102D3212A482}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F72C3C8-F7EB-4817-A30B-102D3212A482}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F72C3C8-F7EB-4817-A30B-102D3212A482}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61C5E2EC-BB90-4527-BBF0-CE9F944295BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61C5E2EC-BB90-4527-BBF0-CE9F944295BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61C5E2EC-BB90-4527-BBF0-CE9F944295BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61C5E2EC-BB90-4527-BBF0-CE9F944295BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -327,6 +333,7 @@ Global
 		{85C9E015-FB52-4199-AD39-ABA6EF64B0C0} = {90A13375-976A-4D35-889A-9477FC66AD45}
 		{3378A501-7AA5-4BF5-84BD-DF9756F6868B} = {90A13375-976A-4D35-889A-9477FC66AD45}
 		{7F72C3C8-F7EB-4817-A30B-102D3212A482} = {90A13375-976A-4D35-889A-9477FC66AD45}
+		{61C5E2EC-BB90-4527-BBF0-CE9F944295BA} = {90A13375-976A-4D35-889A-9477FC66AD45}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DFBD108C-5B75-4224-B2C6-D701316D684C}

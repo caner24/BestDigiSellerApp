@@ -16,14 +16,16 @@ builder.AddProject<Projects.BestDigiSellerApp_Discount_Api>("bestdigisellerapp-d
 var fileApiService = builder.AddProject<Projects.BestDigiSellerApp_File_Api>("bestdigisellerapp-file-api").WithEnvironment("ValidIssuer", validIssuer)
     .WithEnvironment("SecretKey", secretKey);
 
-builder.AddProject<Projects.BestDigiSellerApp_Product_Api>("bestdigisellerapp-product-api").WithReference(redis).WithEnvironment("ValidIssuer", validIssuer)
+var productApi = builder.AddProject<Projects.BestDigiSellerApp_Product_Api>("bestdigisellerapp-product-api").WithReference(redis).WithEnvironment("ValidIssuer", validIssuer)
     .WithEnvironment("SecretKey", secretKey).WithReference(fileApiService);
 
 builder.AddProject<Projects.BestDigiSellerApp_Stripe_Api>("bestdigisellerapp-stripe-api").WithEnvironment("ValidIssuer", validIssuer)
     .WithEnvironment("SecretKey", secretKey);
 
 builder.AddProject<Projects.BestDigiSellerApp_Invoice_Api>("bestdigisellerapp-invoice-api");
-builder.AddProject<Projects.BestDigiSellerApp_Basket_Api>("bestdigisellerapp-basket-api");
+
+builder.AddProject<Projects.BestDigiSellerApp_Basket_Api>("bestdigisellerapp-basket-api").WithReference(productApi).WithEnvironment("ValidIssuer", validIssuer)
+    .WithEnvironment("SecretKey", secretKey);
 
 var walletApiService = builder.AddProject<Projects.BestDigiSellerApp_Wallet_Api>("bestdigisellerapp-wallet-api").WithEnvironment("ValidIssuer", validIssuer)
     .WithEnvironment("SecretKey", secretKey).WithReference(messaging);
