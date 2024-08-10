@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.User.Entity.Dto
 {
-    public record AdminForDeleteDto
+    public record ForgottonPasswordDto
     {
+        public string? Email { get; init; }
+        public string? Token { get; init; }
     }
 }

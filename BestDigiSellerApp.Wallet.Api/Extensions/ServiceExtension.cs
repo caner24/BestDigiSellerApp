@@ -1,4 +1,5 @@
-﻿using BestDigiSellerApp.Core.CrossCuttingConcerns.Email.Abstract;
+﻿using Asp.Versioning;
+using BestDigiSellerApp.Core.CrossCuttingConcerns.Email.Abstract;
 using BestDigiSellerApp.Core.CrossCuttingConcerns.Email.Concrete;
 using BestDigiSellerApp.Wallet.Api.Consume;
 using BestDigiSellerApp.Wallet.Data.Abstract;
@@ -39,6 +40,26 @@ namespace BestDigiSellerApp.Wallet.Api.Extensions
                     });
                 });
             });
+        }
+
+        public static void VersioningSettings(this IServiceCollection services)
+        {
+            var apiVersioningBuilder = services.AddApiVersioning(o =>
+            {
+                o.AssumeDefaultVersionWhenUnspecified = true;
+                o.DefaultApiVersion = new ApiVersion(1, 0);
+                o.ReportApiVersions = true;
+                o.ApiVersionReader = ApiVersionReader.Combine(
+                    new QueryStringApiVersionReader("api-version"),
+                    new HeaderApiVersionReader("X-Version"),
+                    new MediaTypeApiVersionReader("ver"));
+            });
+            apiVersioningBuilder.AddApiExplorer(
+    options =>
+    {
+        options.GroupNameFormat = "'v'VVV";
+        options.SubstituteApiVersionInUrl = true;
+    });
         }
         public static void ServiceLifetimeOptions(this IServiceCollection services, IConfiguration config)
         {

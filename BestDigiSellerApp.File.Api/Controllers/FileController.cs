@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -5,6 +6,7 @@ namespace BestDigiSellerApp.File.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]/")]
+[ApiVersion("1.0")]
 public class FileController : ControllerBase
 {
     [HttpPost("upload")]

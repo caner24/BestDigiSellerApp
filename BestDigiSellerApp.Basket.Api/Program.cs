@@ -20,11 +20,13 @@ try
     builder.Services.CreateProductClient();
     builder.Services.CreateStripeClient();
     builder.Services.ServiceLifetimeOptions();
+    builder.Services.CreateDiscountClient();
     builder.Services.DbContextConfiguration(builder.Configuration);
     builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Load("BestDigiSellerApp.Basket.Application")));
     builder.Services.AddAutoMapper(typeof(Program));
     builder.Services.AddProblemDetails();
+    builder.Services.VersioningSettings();
     builder.Services.AddControllers(config =>
     {
         config.RespectBrowserAcceptHeader = true;

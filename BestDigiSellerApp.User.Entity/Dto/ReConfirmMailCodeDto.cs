@@ -8,6 +8,6 @@ namespace BestDigiSellerApp.User.Entity.Dto
 {
     public record ReConfirmMailCodeDto
     {
-        public string EmailAdress { get; init; }
+        public string? EmailAdress { get; init; }
     }
 }

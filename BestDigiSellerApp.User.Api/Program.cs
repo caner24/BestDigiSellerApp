@@ -35,11 +35,11 @@ try
     builder.Services.AddAutoMapper(typeof(Program));
     builder.Services.ServiceLifetimeOptions(builder.Configuration);
     builder.Services.AddMassTransit(builder.Configuration);
-
+    builder.Services.VersioningSettings();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
-    builder.Services.AddSwaggerGen();
+    builder.Services.SwaggerGenSettings();
 
     var app = builder.Build();
 

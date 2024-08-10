@@ -93,6 +93,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BestDigiSellerApp.Product.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BestDigiSellerApp.Basket.Application", "BestDigiSellerApp.Basket.Application\BestDigiSellerApp.Basket.Application.csproj", "{61C5E2EC-BB90-4527-BBF0-CE9F944295BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BestDigiSellerApp.Discount.Application", "BestDigiSellerApp.Discount.Application\BestDigiSellerApp.Discount.Application.csproj", "{98C5E8FF-380F-48C5-B6CF-26E3942D0F14}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -223,6 +225,10 @@ Global
 		{61C5E2EC-BB90-4527-BBF0-CE9F944295BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61C5E2EC-BB90-4527-BBF0-CE9F944295BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61C5E2EC-BB90-4527-BBF0-CE9F944295BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98C5E8FF-380F-48C5-B6CF-26E3942D0F14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98C5E8FF-380F-48C5-B6CF-26E3942D0F14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98C5E8FF-380F-48C5-B6CF-26E3942D0F14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98C5E8FF-380F-48C5-B6CF-26E3942D0F14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -272,6 +278,7 @@ Global
 		{3378A501-7AA5-4BF5-84BD-DF9756F6868B} = {90A13375-976A-4D35-889A-9477FC66AD45}
 		{7F72C3C8-F7EB-4817-A30B-102D3212A482} = {90A13375-976A-4D35-889A-9477FC66AD45}
 		{61C5E2EC-BB90-4527-BBF0-CE9F944295BA} = {90A13375-976A-4D35-889A-9477FC66AD45}
+		{98C5E8FF-380F-48C5-B6CF-26E3942D0F14} = {90A13375-976A-4D35-889A-9477FC66AD45}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DFBD108C-5B75-4224-B2C6-D701316D684C}

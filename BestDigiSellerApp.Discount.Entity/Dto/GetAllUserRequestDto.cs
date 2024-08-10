@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BestDigiSellerApp.User.Entity.Dto
+namespace BestDigiSellerApp.Discount.Entity.Dto
 {
-    public record AdminForAddDto
+    public record GetAllUserRequestDto
     {
+        public string? Bearer { get; init; }
     }
 }

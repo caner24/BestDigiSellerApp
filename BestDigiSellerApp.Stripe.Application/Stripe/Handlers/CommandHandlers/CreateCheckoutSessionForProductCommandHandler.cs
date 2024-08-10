@@ -21,7 +21,6 @@ namespace BestDigiSellerApp.Stripe.Application.Stripe.Handlers.CommandHandlers
         }
         public async Task<Result<string>> Handle(CreateCheckoutSessionForProductCommandRequest request, CancellationToken cancellationToken)
         {
-
             var domain = "https://localhost:7155";
             var options = new SessionCreateOptions
             {
@@ -39,7 +38,7 @@ namespace BestDigiSellerApp.Stripe.Application.Stripe.Handlers.CommandHandlers
                 {
                     PriceData = new SessionLineItemPriceDataOptions
                     {
-                        UnitAmount = product.Price,
+                        UnitAmount = request.CouponPercentage == 0 ? (long)(product.Price * 100) : (long)((product.Price*100) * request.CouponPercentage)/100,
                         Currency = "TRY",
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
@@ -51,15 +50,15 @@ namespace BestDigiSellerApp.Stripe.Application.Stripe.Handlers.CommandHandlers
 
                 options.Metadata.Add($"productid_{index}", product.ProductId.ToString());
                 options.Metadata.Add($"quantity_{index}", product.Quantity.ToString());
-
+                options.Metadata.Add($"price_{index}", product.Price.ToString());
                 index++;
             }
 
             options.CustomerEmail = request.EmailAdress;
 
             var service = new SessionService();
-            Session session = service.Create(options);
-            return await Task.Run(() => Result.Ok(session.Url));
+            Session session = await service.CreateAsync(options);
+            return Result.Ok(session.Url);
         }
     }
 }

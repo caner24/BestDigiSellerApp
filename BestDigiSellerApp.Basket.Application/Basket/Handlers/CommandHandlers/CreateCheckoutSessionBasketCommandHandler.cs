@@ -24,13 +24,15 @@ namespace BestDigiSellerApp.Basket.Application.Basket.Handlers.CommandHandlers
         private readonly IMapper _mapper;
         private readonly ClaimsPrincipal _claimPrincipal;
         private readonly StripeClient _stripeClient;
+        private readonly DiscountClient _discountClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public CreateCheckoutSessionBasketCommandHandler(IBasketDal basketDal, IMapper mapper, ClaimsPrincipal claimPrincipal, StripeClient stripeClient, IHttpContextAccessor httpContextAccessor)
+        public CreateCheckoutSessionBasketCommandHandler(IBasketDal basketDal, IMapper mapper, ClaimsPrincipal claimPrincipal, StripeClient stripeClient, DiscountClient discountClient, IHttpContextAccessor httpContextAccessor)
         {
             _basketDal = basketDal;
             _claimPrincipal = claimPrincipal;
             _stripeClient = stripeClient;
             _mapper = mapper;
+            _discountClient = discountClient;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -50,6 +52,17 @@ namespace BestDigiSellerApp.Basket.Application.Basket.Handlers.CommandHandlers
             {
                 shoopingCartDto.Products.Add(new ProductDto { Name = item.ProductName, Price = item.Price, ProductId = item.ProductId, Quantity = item.Quantity });
             }
+            if (request.CouponCode != "string" || request.CouponCode != null)
+            {
+                var response = await _discountClient.GetCoupon(new ValidateCouponCodeDto { CouponCode = request.CouponCode, Email = userEmail });
+                if (!response.IsSuccess)
+                    return Result.Fail(new CouponIsNotValid());
+                shoopingCartDto.CouponPercentage = response.Value;
+                shoopingCartDto.CouponCode = request.CouponCode;
+
+            }
+
+
             var stripeRequest = await _stripeClient.CreateCheckout(shoopingCartDto);
 
             if (!stripeRequest.IsSuccess)

@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.Stripe.Application.Stripe.Commands.Request
 {
-    public record CreateCheckoutSessionForProductCommandRequest: CreateCheckoutSessionForProductDto,IRequest<Result<string>>
+    public record CreateCheckoutSessionForProductCommandRequest : CreateCheckoutSessionForProductDto, IRequest<Result<string>>
     {
-
+        public string? Coupon { get; set; }
+        public int? CouponPercentage { get; set; }
     }
 }

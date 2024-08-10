@@ -5,6 +5,7 @@ namespace BestDigiSellerApp.File.Api.Extensions
 {
     public static class ServiceExtensions
     {
+
         public static void VersioningSettings(this IServiceCollection services)
         {
             var apiVersioningBuilder = services.AddApiVersioning(o =>
