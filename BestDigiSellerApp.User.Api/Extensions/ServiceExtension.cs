@@ -1,13 +1,21 @@
 ﻿
+using Asp.Versioning;
 using BestDigiSellerApp.Core.CrossCuttingConcerns.Email.Abstract;
 using BestDigiSellerApp.Core.CrossCuttingConcerns.Email.Concrete;
+using BestDigiSellerApp.User.Api.ActionFilters;
 using BestDigiSellerApp.User.Api.Consume;
+using BestDigiSellerApp.User.Application.User.Commands.Request;
+using BestDigiSellerApp.User.Application.User.Queries.Request;
+using BestDigiSellerApp.User.Application.Validation.FluentValidaton;
 using BestDigiSellerApp.User.Data.Abstract;
 using BestDigiSellerApp.User.Data.Concrete;
+using BestDigiSellerApp.User.Entity.Dto;
+using FluentValidation;
 using MassTransit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 
 namespace BestDigiSellerApp.User.Api.Extensions
@@ -45,6 +53,38 @@ namespace BestDigiSellerApp.User.Api.Extensions
                 client.BaseAddress = new("https://bestdigisellerapp-wallet-api");
             });
         }
+
+        public static void SwaggerGenSettings(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(_ =>
+            {
+                _.SwaggerDoc("v1", new OpenApiInfo { Title = "BestDigiSellerApp", Version = "v1" });
+                _.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "bearer"
+                });
+
+                _.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+            });
+        }
         public static void AddMassTransit(this IServiceCollection services, IConfiguration config)
         {
             services.AddMassTransit(x =>
@@ -53,6 +93,7 @@ namespace BestDigiSellerApp.User.Api.Extensions
                 x.AddConsumer<CreateWalletConsume>();
                 x.AddConsumer<EmailConfirmationConsumer>();
                 x.AddConsumer<LoginTwoStepConsume>();
+                x.AddConsumer<PasswordResetConsumer>();
                 x.UsingRabbitMq((context, cfg) =>
                 {
                     var host = config.GetConnectionString("messaging");
@@ -65,15 +106,35 @@ namespace BestDigiSellerApp.User.Api.Extensions
                     {
                         e.ConfigureConsumer<CreateWalletConsume>(context);
                     });
-                    cfg.ReceiveEndpoint("two-step-confirmation", e =>
+                    cfg.ReceiveEndpoint("password-reset-token", e =>
                     {
-                        e.ConfigureConsumer<LoginTwoStepConsume>(context);
+                        e.ConfigureConsumer<PasswordResetConsumer>(context);
                     });
                 });
             });
         }
+        public static void VersioningSettings(this IServiceCollection services)
+        {
+            var apiVersioningBuilder = services.AddApiVersioning(o =>
+            {
+                o.AssumeDefaultVersionWhenUnspecified = true;
+                o.DefaultApiVersion = new ApiVersion(1, 0);
+                o.ReportApiVersions = true;
+                o.ApiVersionReader = ApiVersionReader.Combine(
+                    new QueryStringApiVersionReader("api-version"),
+                    new HeaderApiVersionReader("X-Version"),
+                    new MediaTypeApiVersionReader("ver"));
+            });
+            apiVersioningBuilder.AddApiExplorer(
+    options =>
+    {
+        options.GroupNameFormat = "'v'VVV";
+        options.SubstituteApiVersionInUrl = true;
+    });
+        }
         public static void ServiceLifetimeOptions(this IServiceCollection services, IConfiguration config)
         {
+            services.AddScoped<ValidationFilterAttribute>();
             services.AddScoped<IUserDal, UserDal>();
             services.AddSingleton<IEmailSender, EmailSender>();
 
@@ -88,6 +149,17 @@ namespace BestDigiSellerApp.User.Api.Extensions
        .Get<EmailConfiguration>();
 
             services.AddSingleton(emailConfig);
+
+
+            services.AddScoped<IValidator<LoginUserCommandRequest>, UserForLoginDtoValidator>();
+            services.AddScoped<IValidator<CreateAdminCommandRequest>, AdminForAddDeletOrUpdateDtoValidator>();
+            services.AddScoped<IValidator<ReConfirmMailCodeCommandRequest>, ReConfirmMailCodeDtoValidator>();
+            services.AddScoped<IValidator<DeleteAdminCommandRequest>, AdminForAddDeletOrUpdateDtoValidator>();
+            services.AddScoped<IValidator<ConfirmMailQueryRequest>, ConfirmMailQueryRequestDtoValidator>();
+            services.AddScoped<IValidator<RegisterUserCommandRequest>, UserForRegistrationDtoValidator>();
+            services.AddScoped<IValidator<LoginTwoStepCommandRequest>, TwoStepLoginDtoValidator>();
+            services.AddScoped<IValidator<ForgottenPasswordCommandRequest>, ForgottonPasswordDtoValidator>();
+            services.AddScoped<IValidator<PasswordResetCommandRequest>, UserPasswordResetDtoValidator>();
         }
 
     }

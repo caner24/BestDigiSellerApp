@@ -1,4 +1,5 @@
 ﻿
+using Asp.Versioning;
 using BestDigiSellerApp.Wallet.Application.Wallet.Commands.Request;
 using BestDigiSellerApp.Wallet.Entity.Dto;
 using MassTransit;
@@ -10,6 +11,7 @@ namespace BestDigiSellerApp.Wallet.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]/")]
+    [ApiVersion("1.0")]
     public class WalletController : ControllerBase
     {
         private readonly IMediator _mediator;

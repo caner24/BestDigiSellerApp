@@ -18,7 +18,7 @@ try
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.SwaggerGenSettings();
-    builder.Services.AddApiVersioning();
+    builder.Services.VersioningSettings();
     var app = builder.Build();
 
     app.UseStaticFiles(new StaticFileOptions

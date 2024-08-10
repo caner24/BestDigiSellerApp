@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using BestDigiSellerApp.Basket.Api.ActionFilters;
 using BestDigiSellerApp.Basket.Application.Basket.Commands.Request;
 using BestDigiSellerApp.Basket.Application.Basket.Queries.Request;
@@ -11,6 +12,7 @@ namespace BestDigiSellerApp.Basket.Api.Controllers;
 [ApiController]
 [Route("api/[controller]/")]
 [Authorize]
+[ApiVersion("1.0")]
 public class BasketController : ControllerBase
 {
     private readonly IMediator _mediator;

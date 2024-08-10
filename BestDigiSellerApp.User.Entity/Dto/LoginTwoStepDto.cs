@@ -8,7 +8,7 @@ namespace BestDigiSellerApp.User.Entity.Dto
 {
     public record LoginTwoStepDto
     {
-        public string Code { get; init; }
+        public string? Code { get; init; }
         public bool IsPersident { get; init; }
         public bool RememberClient { get; init; }
     }

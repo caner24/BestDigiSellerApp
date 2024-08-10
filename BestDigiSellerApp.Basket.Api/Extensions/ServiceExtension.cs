@@ -1,4 +1,5 @@
 ﻿
+using Asp.Versioning;
 using BestDigiSellerApp.Basket.Api.ActionFilters;
 using BestDigiSellerApp.Basket.Application.Basket.Commands.Request;
 using BestDigiSellerApp.Basket.Application.Clients;
@@ -23,6 +24,26 @@ namespace BestDigiSellerApp.Basket.Api.Extensions
                 b.MigrationsAssembly("BestDigiSellerApp.Basket.Api");
             }
            ));
+        }
+
+        public static void VersioningSettings(this IServiceCollection services)
+        {
+            var apiVersioningBuilder = services.AddApiVersioning(o =>
+            {
+                o.AssumeDefaultVersionWhenUnspecified = true;
+                o.DefaultApiVersion = new ApiVersion(1, 0);
+                o.ReportApiVersions = true;
+                o.ApiVersionReader = ApiVersionReader.Combine(
+                    new QueryStringApiVersionReader("api-version"),
+                    new HeaderApiVersionReader("X-Version"),
+                    new MediaTypeApiVersionReader("ver"));
+            });
+            apiVersioningBuilder.AddApiExplorer(
+    options =>
+    {
+        options.GroupNameFormat = "'v'VVV";
+        options.SubstituteApiVersionInUrl = true;
+    });
         }
 
         public static void SwaggerGenSettings(this IServiceCollection services)
@@ -71,6 +92,15 @@ namespace BestDigiSellerApp.Basket.Api.Extensions
                 client.BaseAddress = new("https://bestdigisellerapp-stripe-api");
             });
         }
+
+        public static void CreateDiscountClient(this IServiceCollection services)
+        {
+            services.AddHttpClient<StripeClient>(client =>
+            {
+                client.BaseAddress = new("https://bestdigisellerapp-discount-api");
+            });
+        }
+
 
 
         public static void ServiceLifetimeOptions(this IServiceCollection services)

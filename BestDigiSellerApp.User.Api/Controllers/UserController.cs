@@ -1,3 +1,5 @@
+using Asp.Versioning;
+using BestDigiSellerApp.User.Api.ActionFilters;
 using BestDigiSellerApp.User.Application.User.Commands.Request;
 using BestDigiSellerApp.User.Application.User.Queries.Request;
 using BestDigiSellerApp.User.Entity.Dto;
@@ -10,6 +12,7 @@ namespace BestDigiSellerApp.User.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[ApiVersion("1.0")]
 public class UserController : ControllerBase
 {
     private readonly MediatR.IMediator _mediator;
@@ -21,6 +24,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("login")]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> Login([FromBody] LoginUserCommandRequest loginUserCommandRequest)
     {
         var response = await _mediator.Send(loginUserCommandRequest);
@@ -31,6 +35,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("register")]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> Register([FromBody] RegisterUserCommandRequest registerUserCommandRequest)
     {
         var response = await _mediator.Send(registerUserCommandRequest);
@@ -44,6 +49,7 @@ public class UserController : ControllerBase
 
 
     [HttpPost("reSendConfirmationToken")]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> ReSendConfirmationToken([FromBody] ReConfirmMailCodeCommandRequest resendConfirmationEmailRequest)
     {
         var response = await _mediator.Send(resendConfirmationEmailRequest);
@@ -55,7 +61,20 @@ public class UserController : ControllerBase
         return Ok();
     }
 
+    [HttpPost("forgottenPassword")]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
+    public async Task<IActionResult> ForgottenPassword([FromBody] ForgottenPasswordCommandRequest forgottenPasswordCommandRequest)
+    {
+        var response = await _mediator.Send(forgottenPasswordCommandRequest);
+        if (!response.IsSuccess)
+            return BadRequest(response.Errors);
+
+        await _publishEndpoint.Publish<ForgottonPasswordDto>(new ForgottonPasswordDto { Email = forgottenPasswordCommandRequest.Email, Token = response.Value.Token });
+        return Ok();
+    }
+
     [HttpGet("confirmMail/{Email}/{Token}")]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> ConfirmEmail([FromRoute] ConfirmMailQueryRequest confirmMailQueryRequest)
     {
         var response = await _mediator.Send(confirmMailQueryRequest);
@@ -65,7 +84,19 @@ public class UserController : ControllerBase
         return Content($"Your email isConfirmed");
     }
 
+    [HttpPost("resetPassword")]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
+    public async Task<IActionResult> ResetPassword([FromBody] PasswordResetCommandRequest passwordResetCommandRequest)
+    {
+        var response = await _mediator.Send(passwordResetCommandRequest);
+        if (!response.IsSuccess)
+            return BadRequest(response.Errors);
+
+        return Ok();
+    }
+
     [HttpPost("loginTwoStep")]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> LoginTwoStep([FromBody] LoginTwoStepCommandRequest loginTwoStepCommandRequest)
     {
         var response = await _mediator.Send(loginTwoStepCommandRequest);
@@ -73,5 +104,16 @@ public class UserController : ControllerBase
             return BadRequest(response.Errors);
 
         return Ok(response.Value);
+    }
+
+
+    [HttpPost("manage2factor")]
+    public async Task<IActionResult> Manage2factor([FromBody] TwoFactorEnableRequest twoFactorEnableRequest)
+    {
+        var response = await _mediator.Send(twoFactorEnableRequest);
+        if (!response.IsSuccess)
+            return BadRequest(response.Errors);
+
+        return Ok();
     }
 }

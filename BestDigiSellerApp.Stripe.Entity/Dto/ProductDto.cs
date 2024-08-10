@@ -10,7 +10,7 @@ namespace BestDigiSellerApp.Stripe.Entity.Dto
     {
         public string ProductId { get; init; }
         public string Name { get; init; }
-        public long Price { get; init; }
+        public double Price { get; init; }
         public int Quantity { get; init; }
     }
 }

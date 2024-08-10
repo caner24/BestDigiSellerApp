@@ -44,13 +44,15 @@ public class StripeController : ControllerBase
             {
                 var productId = session.Metadata[$"productid_{i}"];
                 var quantity = session.Metadata[$"quantity_{i}"];
+                var price = session.Metadata[$"price_{i}"];
                 products.Add(new ProductDto
                 {
                     ProductId = productId,
-                    Quantity = int.Parse(quantity)
+                    Quantity = int.Parse(quantity),
+                    Price = long.Parse(price)
                 });
             }
-            return Ok();
+            return Ok(products);
         }
         catch (Exception ex)
         {

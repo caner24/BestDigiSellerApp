@@ -2,6 +2,7 @@
 using BestDigiSellerApp.Wallet.Data.Abstract;
 using BestDigiSellerApp.Wallet.Entity;
 using BestDigiSellerApp.Wallet.Entity.Exceptions;
+using FluentResults;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,32 +16,32 @@ namespace BestDigiSellerApp.Wallet.Data.Concrete
     public class WalletDetailDal : EFCoreRepositoryBase<WalletContext, WalletDetail>, IWalletDetailDal
     {
         private readonly WalletContext _context;
-        public WalletDetailDal(WalletContext tContext) : base(tContext)
+        private readonly ClaimsPrincipal _claimPrincipal;
+        public WalletDetailDal(WalletContext tContext, ClaimsPrincipal claimPrincipal) : base(tContext)
         {
             _context = tContext;
-
+            _claimPrincipal = claimPrincipal;
         }
 
-        //public async Task SendMoneyFastAsync(string iban, float amount)
-        //{
-        //    var currentUserId = _unitOfWork.ClaimsPrincipal.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-        //    var currentUser = await _unitOfWork.WalletDetailDal.Get(x => x.Wallet.UserId == currentUserId).FirstOrDefaultAsync();
-        //    var ibanUser = await _unitOfWork.WalletDetailDal.Get(x => x.Iban == iban).FirstOrDefaultAsync();
+        public async Task<Result> SendMoneyFastAsync(string iban, float amount)
+        {
+            var currentUserId = _claimPrincipal.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            var currentUser = await _context.WalletDetail.Where(x => x.Wallet.UserId == currentUserId).FirstOrDefaultAsync();
+            var ibanUser = await _context.WalletDetail.Where(x => x.Iban == iban).FirstOrDefaultAsync();
 
-        //    if (ibanUser is null)
-        //        throw new IbanNotFoundException();
+            if (ibanUser is null)
+                return Result.Fail(new IbanNotFoundResult());
 
-        //    if (currentUser.Amount < amount)
-        //        throw new NotEnoughtMoneyException();
+            if (currentUser.Amount < amount)
+                return Result.Fail(new NotEnoughtMoneyResult());
 
-        //    if (currentUser.Currency != ibanUser.Currency)
-        //        throw new CurrenciesAreNotSameException();
 
-        //    await _unitOfWork.BeginTransactionAsync();
-        //    currentUser.Amount -= amount;
-        //    ibanUser.Amount += amount;
-        //    await _unitOfWork.Context.SaveChangesAsync();
-        //    await _unitOfWork.CommitAsync();
-        //}
+            await _context.Database.BeginTransactionAsync();
+            currentUser.Amount -= amount;
+            ibanUser.Amount += amount;
+            await _context.SaveChangesAsync();
+            await _context.Database.CommitTransactionAsync();
+            return Result.Ok();
+        }
     }
 }

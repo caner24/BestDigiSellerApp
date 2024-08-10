@@ -27,16 +27,22 @@ namespace BestDigiSellerApp.Product.Data.Concrete
         public ICategoryDal CategoryDal => _categoryDal;
 
 
-        public ProductContext Context => throw new NotImplementedException();
+        public ProductContext Context => _productContext;
 
-        public Task BeginTransactionAsync()
+        public async Task BeginTransactionAsync()
         {
-            throw new NotImplementedException();
+            if (_productContext.Database.CurrentTransaction == null)
+            {
+                await _productContext.Database.BeginTransactionAsync();
+            }
         }
 
-        public Task CommitAsync()
+        public async Task CommitAsync()
         {
-            throw new NotImplementedException();
+            if (_productContext.Database.CurrentTransaction != null)
+            {
+                await _productContext.Database.CurrentTransaction.CommitAsync();
+            }
         }
     }
 }

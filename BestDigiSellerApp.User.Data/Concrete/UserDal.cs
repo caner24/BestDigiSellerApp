@@ -2,9 +2,11 @@
 using BestDigiSellerApp.User.Data.Abstract;
 using BestDigiSellerApp.User.Entity.Dto;
 using BestDigiSellerApp.User.Entity.Exceptions;
+using BestDigiSellerApp.User.Entity.Results;
 using FluentResults;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -24,6 +26,7 @@ namespace BestDigiSellerApp.User.Data.Concrete
     {
         string? confirmEmailEndpointName = null;
         private readonly IMapper _mapper;
+        private readonly UserContext _userContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<User.Entity.User> _userManager;
         private readonly SignInManager<User.Entity.User> _signInManager;
@@ -32,10 +35,12 @@ namespace BestDigiSellerApp.User.Data.Concrete
         public UserDal(
             IHttpContextAccessor httpContextAccessor,
             IMapper mapper,
+            UserContext userContext,
             UserManager<User.Entity.User> userManager,
             SignInManager<User.Entity.User> signInManager,
         IConfiguration configuration)
         {
+            _userContext = userContext;
             _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
             _userManager = userManager;
@@ -195,17 +200,6 @@ namespace BestDigiSellerApp.User.Data.Concrete
             return Result.Ok(HttpUtility.UrlEncode(passwordResetToken));
         }
 
-        public async Task<Result<string>> GenerateChangePhoneNumber(string email)
-        {
-            var isUserExist = await _userManager.FindByEmailAsync(email);
-            if (isUserExist is null)
-                return new UserNotFoundResult();
-
-            var passwordResetToken = await _userManager.GenerateChangePhoneNumberTokenAsync(isUserExist, isUserExist.PhoneNumber);
-
-            return Result.Ok(HttpUtility.UrlEncode(passwordResetToken));
-        }
-
         public async Task<Result<IdentityResult>> ConfirmEmailToken(string email, string token)
         {
 
@@ -242,6 +236,70 @@ namespace BestDigiSellerApp.User.Data.Concrete
             return Result.Ok(result);
         }
 
+        public async Task<Result> CreateAdminUser(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+                return Result.Fail(new UserNotFoundResult());
+            if (await _userManager.IsInRoleAsync(user, "Admin"))
+                return Result.Fail(new UserAlreadyAdminResult());
+
+            await _userManager.AddToRoleAsync(user, "Admin");
+
+            return Result.Ok();
+        }
+
+        public async Task<Result> DeleteAdminUser(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+                return Result.Fail(new UserNotFoundResult());
+
+            if (await _userManager.IsInRoleAsync(user, "Admin"))
+            {
+                await _userManager.RemoveFromRoleAsync(user, "Admin");
+            }
+
+
+            return Result.Ok();
+        }
+
+        public async Task<Result<IdentityResult>> PasswordReset(string email, string token, string password)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+                return Result.Fail(new UserNotFoundResult());
+
+            var resetPassword = await _userManager.ResetPasswordAsync(user, token, password);
+            if (!resetPassword.Succeeded)
+                return Result.Fail<IdentityResult>(resetPassword.Errors.Select(x => x.Description));
+
+            return Result.Ok(resetPassword);
+        }
+
+        public async Task<Result<List<string>>> GetUsersEmail()
+        {
+            var users = await _userContext.Users.Select(x => x.Email).ToListAsync();
+            if (users is null)
+                return Result.Fail(new UserNotFoundResult());
+
+            return Result.Ok(users);
+        }
+
+        public async Task<Result> Manage2Factor()
+        {
+            var userEmail = _httpContextAccessor.HttpContext.User.Claims.Where(x => x.Type == ClaimTypes.Email).FirstOrDefault().Value;
+            if (userEmail is null)
+                return Result.Fail(new UserNotFoundResult());
+
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (!user.TwoFactorEnabled)
+            {
+                user.TwoFactorEnabled = true;
+            }
+            return Result.Ok();
+
+        }
     }
 
 }

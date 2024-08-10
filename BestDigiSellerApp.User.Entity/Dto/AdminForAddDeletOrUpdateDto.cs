@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.User.Entity.Dto
 {
-    public record UserForDisableDto
+    public record AdminForAddDeletOrUpdateDto
     {
-        public string? UserEmail { get; init; }
+        public string? Email { get; init; }
     }
 }

@@ -19,7 +19,13 @@ namespace BestDigiSellerApp.User.Data.Abstract
         Task<Result<TokenDto>> RefreshToken(TokenDto tokenDto);
         Task<Result<string>> GenerateEmailConfirmationToken(string email);
         Task<Result<string>> GeneratePasswordResetToken(string email);
-        Task<Result<string>> GenerateChangePhoneNumber(string email);
+        Task<Result> CreateAdminUser(string email);
+        Task<Result> DeleteAdminUser(string email);
+
+        Task<Result> Manage2Factor();
+        Task<Result<IdentityResult>> PasswordReset(string email, string token, string password);
+
+        Task<Result<List<string>>> GetUsersEmail();
         Task<Result<IdentityResult>> ConfirmEmailToken(string email, string token);
 
     }
