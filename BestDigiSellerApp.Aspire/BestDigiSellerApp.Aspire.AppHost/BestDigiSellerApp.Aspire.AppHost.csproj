@@ -24,7 +24,6 @@
     <ProjectReference Include="..\..\BestDigiSellerApp.Discount.Api\BestDigiSellerApp.Discount.Api.csproj" />
     <ProjectReference Include="..\..\BestDigiSellerApp.File.Api\BestDigiSellerApp.File.Api.csproj" />
     <ProjectReference Include="..\..\BestDigiSellerApp.Invoice.Api\BestDigiSellerApp.Invoice.Api.csproj" />
-    <ProjectReference Include="..\..\BestDigiSellerApp.Ocelot\BestDigiSellerApp.Ocelot.csproj" />
     <ProjectReference Include="..\..\BestDigiSellerApp.Product.Api\BestDigiSellerApp.Product.Api.csproj" />
     <ProjectReference Include="..\..\BestDigiSellerApp.Stripe.Api\BestDigiSellerApp.Stripe.Api.csproj" />
     <ProjectReference Include="..\..\BestDigiSellerApp.User.Api\BestDigiSellerApp.User.Api.csproj" />

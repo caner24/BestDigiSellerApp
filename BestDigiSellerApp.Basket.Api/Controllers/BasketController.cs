@@ -1,4 +1,7 @@
+using BestDigiSellerApp.Basket.Api.ActionFilters;
 using BestDigiSellerApp.Basket.Application.Basket.Commands.Request;
+using BestDigiSellerApp.Basket.Application.Basket.Queries.Request;
+using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,28 +21,56 @@ public class BasketController : ControllerBase
 
 
     [HttpGet("getBasket")]
-    public IActionResult GetBasket()
+    public async Task<IActionResult> GetBasket()
     {
-        return Ok();
+        var request = new GetUserBasketQueryRequest();
+        var response = await _mediator.Send(request);
+        if (response is null)
+            return BadRequest(response.Errors);
+
+        return Ok(response.Value);
     }
 
     [HttpPost("addBasket")]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> AddBasket([FromBody] CreateBasketCommandRequest createBasketCommandRequest)
     {
         var response = await _mediator.Send(createBasketCommandRequest);
-        return Ok();
-    }
+        if (response.IsFailed)
+            return BadRequest(response.Errors);
 
-    [HttpPut("updateBasket")]
-    public IActionResult UpdateBasket()
-    {
         return Ok();
     }
 
     [HttpDelete("emptyBasket")]
-    public IActionResult EmptyBasket()
+    public async Task<IActionResult> EmptyBasket()
     {
+        var request = new EmptyBasketCommandRequest();
+        var response = await _mediator.Send(request);
+        if (!response.IsSuccess)
+            return BadRequest(response.Errors);
         return Ok();
+    }
+
+    [HttpPut("deleteItemForBasket")]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
+    public async Task<IActionResult> DeleteItemForBasket([FromBody] DeleteItemToBasketCommandRequest deleteItemToBasketCommandRequest)
+    {
+        var response = await _mediator.Send(deleteItemToBasketCommandRequest);
+        if (!response.IsSuccess)
+            return BadRequest(response.Errors);
+
+
+        return Ok();
+    }
+
+    [HttpPost("createCheckoutSessionForProduct")]
+    public async Task<IActionResult> CreateCheckoutSessionForBasket([FromBody] CreateCheckoutSessionBasketCommandRequest createCheckoutSessionBasketCommandRequest)
+    {
+        var response = await _mediator.Send(createCheckoutSessionBasketCommandRequest);
+        if (!response.IsSuccess)
+            return BadRequest(response.Errors);
+        return Ok(response.Value);
     }
 
 }

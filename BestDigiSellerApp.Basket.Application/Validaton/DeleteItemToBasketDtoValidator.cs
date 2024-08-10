@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.Basket.Application.Validaton
 {
-    public class BasketForCreateDtoValidator : AbstractValidator<ProductRequestDto>
+    public class DeleteItemToBasketDtoValidator:AbstractValidator<DeleteItemToBasketDto>
     {
-        public BasketForCreateDtoValidator()
+        public DeleteItemToBasketDtoValidator()
         {
             RuleFor(x => x.ProductId).NotNull().NotEmpty().WithMessage("The productId must be not null");
             RuleFor(x => x.Quantity).GreaterThan(0).WithMessage("The Quantity must be greater than 0");

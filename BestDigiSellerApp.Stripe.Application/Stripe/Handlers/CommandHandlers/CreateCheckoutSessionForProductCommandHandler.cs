@@ -21,17 +21,18 @@ namespace BestDigiSellerApp.Stripe.Application.Stripe.Handlers.CommandHandlers
         }
         public async Task<Result<string>> Handle(CreateCheckoutSessionForProductCommandRequest request, CancellationToken cancellationToken)
         {
+
             var domain = "https://localhost:7155";
             var options = new SessionCreateOptions
             {
-                LineItems = new List<SessionLineItemOptions>
-                {
-                },
+                LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
-                SuccessUrl = domain + "/api/Stripe/success",
+                SuccessUrl = domain + "/api/Stripe/success?session_id={CHECKOUT_SESSION_ID}",
                 CancelUrl = domain + "/api/Stripe/cancel",
+                Metadata = new Dictionary<string, string>()
             };
 
+            int index = 0;
             foreach (var product in request.Products)
             {
                 options.LineItems.Add(new SessionLineItemOptions
@@ -47,8 +48,15 @@ namespace BestDigiSellerApp.Stripe.Application.Stripe.Handlers.CommandHandlers
                     },
                     Quantity = product.Quantity,
                 });
+
+                options.Metadata.Add($"productid_{index}", product.ProductId.ToString());
+                options.Metadata.Add($"quantity_{index}", product.Quantity.ToString());
+
+                index++;
             }
+
             options.CustomerEmail = request.EmailAdress;
+
             var service = new SessionService();
             Session session = service.Create(options);
             return await Task.Run(() => Result.Ok(session.Url));

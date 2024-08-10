@@ -18,7 +18,7 @@ try
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.SwaggerGenSettings();
     builder.Services.CreateProductClient();
-    builder.Services.ConfigureCors();
+    builder.Services.CreateStripeClient();
     builder.Services.ServiceLifetimeOptions();
     builder.Services.DbContextConfiguration(builder.Configuration);
     builder.Services.AddExceptionHandler<GlobalExceptionHandler>();

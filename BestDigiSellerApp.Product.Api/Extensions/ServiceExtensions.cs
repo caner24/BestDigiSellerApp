@@ -3,6 +3,7 @@ using Asp.Versioning;
 using BestDigiSellerApp.Product.Api.ActionFilters;
 using BestDigiSellerApp.Product.Application.Clients;
 using BestDigiSellerApp.Product.Application.Product.Commands.Request;
+using BestDigiSellerApp.Product.Application.Product.Handlers.CommandHandlers;
 using BestDigiSellerApp.Product.Application.Validation.FluentValidation;
 using BestDigiSellerApp.Product.Data.Abstract;
 using BestDigiSellerApp.Product.Data.Concrete;
@@ -121,6 +122,7 @@ namespace BestDigiSellerApp.Product.Api.Extensions
             services.AddScoped<ISortHelper<Category>, SortHelper<Category>>();
 
 
+            services.AddScoped<IValidator<UpdateProductQuantityChangeCommandRequest>, ProductQuantityChangeDtoValidator>();
             services.AddScoped<IValidator<CreateProductCommandRequest>, CreateProductDtoValidator>();
             services.AddScoped<IValidator<CreateCategoryCommandRequest>, CreateCategoryDtoValidator>();
             services.AddScoped<IValidator<DeleteProductCommandRequest>, DeleteProductDtoValidator>();

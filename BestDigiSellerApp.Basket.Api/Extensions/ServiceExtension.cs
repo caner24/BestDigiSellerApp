@@ -1,7 +1,11 @@
 ﻿
+using BestDigiSellerApp.Basket.Api.ActionFilters;
+using BestDigiSellerApp.Basket.Application.Basket.Commands.Request;
 using BestDigiSellerApp.Basket.Application.Clients;
+using BestDigiSellerApp.Basket.Application.Validaton;
 using BestDigiSellerApp.Basket.Data.Abstract;
 using BestDigiSellerApp.Basket.Data.Concrete;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
@@ -60,21 +64,20 @@ namespace BestDigiSellerApp.Basket.Api.Extensions
             });
         }
 
-        public static void ConfigureCors(this IServiceCollection services)
+        public static void CreateStripeClient(this IServiceCollection services)
         {
-            services.AddCors(options =>
+            services.AddHttpClient<StripeClient>(client =>
             {
-                options.AddPolicy("CorsPolicy", builder =>
-                    builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                 .WithExposedHeaders("X-Pagination")
-
-                );
+                client.BaseAddress = new("https://bestdigisellerapp-stripe-api");
             });
         }
+
+
         public static void ServiceLifetimeOptions(this IServiceCollection services)
         {
+            services.AddScoped<ValidationFilterAttribute>();
+            services.AddScoped<IValidator<CreateBasketCommandRequest>, BasketForCreateDtoValidator>();
+            services.AddScoped<IValidator<DeleteItemToBasketCommandRequest>, DeleteItemToBasketDtoValidator>();
             services.AddHttpContextAccessor();
             services.AddTransient<ClaimsPrincipal>(provider =>
             {
@@ -83,7 +86,19 @@ namespace BestDigiSellerApp.Basket.Api.Extensions
             });
 
             services.AddScoped<IBasketDal, BasketDal>();
+        }
+        public static void CustomCorsPolicy(this IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder =>
+                    builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                 .WithExposedHeaders(new[] { "Location" })
 
+                );
+            });
         }
     }
 }

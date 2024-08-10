@@ -108,6 +108,17 @@ public class ProductController : ControllerBase
         return Ok();
     }
 
+    [HttpPut("productQuantityChange")]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
+    public async Task<IActionResult> ProductQuantityChange([FromBody] UpdateProductQuantityChangeCommandRequest updateProductQuantityChangeCommandRequest)
+    {
+        var response = await _mediator.Send(updateProductQuantityChangeCommandRequest);
+        if (!response.IsSuccess)
+            return BadRequest(response.Errors);
+
+        return Ok();
+    }
+
     private IEnumerable<Link> CreateLinksForProduct(Guid id, string fields = "")
     {
         var links = new List<Link>

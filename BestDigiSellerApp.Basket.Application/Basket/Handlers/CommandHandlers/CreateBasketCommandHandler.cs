@@ -7,6 +7,7 @@ using BestDigiSellerApp.Basket.Entity;
 using BestDigiSellerApp.Basket.Entity.Dto;
 using FluentResults;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,11 +37,24 @@ namespace BestDigiSellerApp.Basket.Application.Basket.Handlers.CommandHandlers
             if (!product.IsSuccess)
                 return Result.Fail(product.Errors);
 
-            var mappedBasket = new BasketForCreateDto { ImageFile = product.Value.photos.First().url, MaxPoint = product.Value.productDetail.maxPoint, PointPercentage = product.Value.productDetail.pointPercentage, Price = product.Value.productDetail.price, ProductId = product.Value.id, ProductName = product.Value.name, Quantity = request.Quantity, UserName = userName };
-            var mappedCart = _mapper.Map<ShoppingCart>(mappedBasket);
+            var userBasket = await _basketDal.Get(x => x.UserName == userName).FirstOrDefaultAsync();
+            if (userBasket == null)
+            {
+                var mappedBasket = new BasketForCreateDto { ImageFile = product.Value.photos.First().url, MaxPoint = product.Value.productDetail.maxPoint, PointPercentage = product.Value.productDetail.pointPercentage, Price = product.Value.productDetail.price, ProductId = product.Value.id, ProductName = product.Value.name, Quantity = request.Quantity, UserName = userName };
+                var mappedCart = _mapper.Map<ShoppingCart>(mappedBasket);
 
-            var addedBasket = await _basketDal.AddAsync(mappedCart);
-            return Result.Ok(new CreateBasketCommandResponse { Id = addedBasket.Id });
+                var addedBasket = await _basketDal.AddAsync(mappedCart);
+                return Result.Ok(new CreateBasketCommandResponse { Id = addedBasket.Id });
+            }
+            else
+            {
+                userBasket.Items.Add(new ShoppingCartItem { ImageFile = product.Value.photos.First().url, MaxPoint = product.Value.productDetail.maxPoint, PointPercentage = product.Value.productDetail.pointPercentage, Price = product.Value.productDetail.price, ProductId = product.Value.id, ProductName = product.Value.name, Quantity = request.Quantity });
+                var addedBasket = await _basketDal.UpdateAsync(userBasket);
+                return Result.Ok(new CreateBasketCommandResponse { Id = addedBasket.Id });
+            }
+
+
+
         }
     }
 }

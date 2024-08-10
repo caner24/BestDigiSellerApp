@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BestDigiSellerApp.Stripe.Entity.Dto
+namespace BestDigiSellerApp.Basket.Entity.Dto
 {
-    public record ProductDto
+    public record DeleteItemToBasketDto
     {
         public string ProductId { get; init; }
-        public string Name { get; init; }
-        public long Price { get; init; }
         public int Quantity { get; init; }
     }
+
 }
