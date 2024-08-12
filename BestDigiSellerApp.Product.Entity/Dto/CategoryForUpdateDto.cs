@@ -8,7 +8,7 @@ namespace BestDigiSellerApp.Product.Entity.Dto
 {
     public record CategoryForUpdateDto
     {
-        public Guid Id { get; init; }
+        public string? Id { get; init; }
         public string? Name { get; init; }
         public string? Tag { get; init; }
     }

@@ -6,6 +6,7 @@ using BestDigiSellerApp.User.Entity.Dto;
 using MassTransit;
 using MassTransit.Mediator;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BestDigiSellerApp.User.Api.Controllers;
@@ -108,9 +109,11 @@ public class UserController : ControllerBase
 
 
     [HttpPost("manage2factor")]
-    public async Task<IActionResult> Manage2factor([FromBody] TwoFactorEnableRequest twoFactorEnableRequest)
+    [Authorize]
+    public async Task<IActionResult> Manage2factor()
     {
-        var response = await _mediator.Send(twoFactorEnableRequest);
+        var request = new TwoFactorEnableRequest();
+        var response = await _mediator.Send(request);
         if (!response.IsSuccess)
             return BadRequest(response.Errors);
 

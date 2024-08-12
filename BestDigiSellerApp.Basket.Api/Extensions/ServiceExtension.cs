@@ -95,7 +95,7 @@ namespace BestDigiSellerApp.Basket.Api.Extensions
 
         public static void CreateDiscountClient(this IServiceCollection services)
         {
-            services.AddHttpClient<StripeClient>(client =>
+            services.AddHttpClient<DiscountClient>(client =>
             {
                 client.BaseAddress = new("https://bestdigisellerapp-discount-api");
             });

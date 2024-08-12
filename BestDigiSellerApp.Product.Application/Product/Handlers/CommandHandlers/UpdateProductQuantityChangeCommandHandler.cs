@@ -21,7 +21,7 @@ namespace BestDigiSellerApp.Product.Application.Product.Handlers.CommandHandlers
         }
         public async Task<Result> Handle(UpdateProductQuantityChangeCommandRequest request, CancellationToken cancellationToken)
         {
-            var product = await _unitOfWork.ProductDal.Get(x => x.Id == request.ProductId).FirstOrDefaultAsync();
+            var product = await _unitOfWork.ProductDal.Get(x => x.Id == request.ProductId,true).FirstOrDefaultAsync();
             if (product == null)
                 return Result.Fail(new ProductNotFoundResult());
 

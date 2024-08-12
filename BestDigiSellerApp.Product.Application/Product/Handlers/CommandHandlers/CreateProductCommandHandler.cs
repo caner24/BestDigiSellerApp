@@ -38,7 +38,7 @@ namespace BestDigiSellerApp.Product.Application.Product.Handlers.CommandHandlers
             {
                 var isCategoryExist = await _unitOfWork.CategoryDal.Get(x => x.Id == item, true).FirstOrDefaultAsync();
                 if (isCategoryExist == null)
-                    return Result.Fail(new CategoryNotFoundResult(item));
+                    return Result.Fail(new CategoryNotFoundResult(item.ToString()));
                 product.Categories.Add(isCategoryExist);
             }
 

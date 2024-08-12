@@ -1,6 +1,7 @@
 ﻿
 using Asp.Versioning;
 using BestDigiSellerApp.Wallet.Application.Wallet.Commands.Request;
+using BestDigiSellerApp.Wallet.Application.Wallet.Queries.Request;
 using BestDigiSellerApp.Wallet.Entity.Dto;
 using MassTransit;
 using MediatR;
@@ -16,6 +17,7 @@ namespace BestDigiSellerApp.Wallet.Api.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IPublishEndpoint _publishEndpoint;
+
         public WalletController(IMediator mediator, IPublishEndpoint publishEndpoint)
         {
             _mediator = mediator;
@@ -31,6 +33,27 @@ namespace BestDigiSellerApp.Wallet.Api.Controllers
 
             await _publishEndpoint.Publish<WalletCreatedDto>(new WalletCreatedDto { UserEmail = response.Value.UserEmail, Currency = response.Value.Currency, Iban = response.Value.Iban });
             return StatusCode(201, response.Value);
+        }
+
+
+        [HttpPost("addFundsToWallet")]
+        public async Task<IActionResult> AddFundsToWallet([FromBody]AddFundsToWalletCommandRequest addFundsToWalletCommandRequest)
+        {
+            var response = await _mediator.Send(addFundsToWalletCommandRequest);
+            if (response.IsFailed)
+                return BadRequest(response.Errors);
+
+            return Ok();
+        }
+
+        [HttpGet("getWalletBalance")]
+        public async Task<IActionResult> GetWalletBalance([FromQuery] GetWalletBalanceQueryRequest getWalletBalanceQueryRequest)
+        {
+            var response = await _mediator.Send(getWalletBalanceQueryRequest);
+            if (response.IsFailed)
+                return BadRequest(response.Errors);
+
+            return Ok(response.Value);
         }
     }
 }

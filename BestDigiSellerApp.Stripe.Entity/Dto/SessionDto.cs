@@ -8,6 +8,6 @@ namespace BestDigiSellerApp.Stripe.Entity.Dto
 {
     public record SessionDto
     {
-        public string Session_id { get; init; }
+        public string session_id { get; init; }
     }
 }

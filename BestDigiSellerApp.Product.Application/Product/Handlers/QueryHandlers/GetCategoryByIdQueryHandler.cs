@@ -24,7 +24,7 @@ namespace BestDigiSellerApp.Product.Application.Product.Handlers.QueryHandlers
         {
             var category = await _unitOfWork.CategoryDal.Get(x => x.Id == request.Id).FirstOrDefaultAsync();
             if (category is null)
-                return Result.Fail(new CategoryNotFoundResult(request.Id));
+                return Result.Fail(new CategoryNotFoundResult(request.Id.ToString()));
 
             return Result.Ok(category);
         }

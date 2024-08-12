@@ -17,22 +17,21 @@ var fileApiService = builder.AddProject<Projects.BestDigiSellerApp_File_Api>("be
 var productApi = builder.AddProject<Projects.BestDigiSellerApp_Product_Api>("bestdigisellerapp-product-api").WithReference(redis).WithEnvironment("ValidIssuer", validIssuer)
     .WithEnvironment("SecretKey", secretKey).WithReference(fileApiService);
 
-var stripeApi = builder.AddProject<Projects.BestDigiSellerApp_Stripe_Api>("bestdigisellerapp-stripe-api").WithEnvironment("ValidIssuer", validIssuer)
-    .WithEnvironment("SecretKey", secretKey);
-
-builder.AddProject<Projects.BestDigiSellerApp_Invoice_Api>("bestdigisellerapp-invoice-api");
-
 
 
 var walletApiService = builder.AddProject<Projects.BestDigiSellerApp_Wallet_Api>("bestdigisellerapp-wallet-api").WithEnvironment("ValidIssuer", validIssuer)
     .WithEnvironment("SecretKey", secretKey).WithReference(messaging);
 
+var stripeApi = builder.AddProject<Projects.BestDigiSellerApp_Stripe_Api>("bestdigisellerapp-stripe-api").WithEnvironment("ValidIssuer", validIssuer)
+    .WithEnvironment("SecretKey", secretKey).WithReference(messaging).WithReference(productApi).WithReference(walletApiService);
 var userApi = builder.AddProject<Projects.BestDigiSellerApp_User_Api>("bestdigisellerapp-user-api").WithExternalHttpEndpoints().WithReference(walletApiService).WithEnvironment("ValidIssuer", validIssuer)
     .WithEnvironment("SecretKey", secretKey).WithReference(messaging);
 
 var discountApi = builder.AddProject<Projects.BestDigiSellerApp_Discount_Api>("bestdigisellerapp-discount-api").WithReference(userApi).WithEnvironment("ValidIssuer", validIssuer)
     .WithEnvironment("SecretKey", secretKey).WithReference(messaging);
-builder.Build().Run();
+
 
 builder.AddProject<Projects.BestDigiSellerApp_Basket_Api>("bestdigisellerapp-basket-api").WithReference(discountApi).WithReference(productApi).WithReference(stripeApi).WithEnvironment("ValidIssuer", validIssuer)
     .WithEnvironment("SecretKey", secretKey);
+
+builder.Build().Run();

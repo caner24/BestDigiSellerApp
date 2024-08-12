@@ -8,9 +8,12 @@ namespace BestDigiSellerApp.Basket.Entity.Dto
 {
     public record ProductDto
     {
-        public string ProductId { get; set; }
-        public string Name { get; set; }
-        public double Price { get; set; }
-        public int Quantity { get; set; }
+        public string ProductId { get; init; }
+        public string Email { get; init; }
+        public string Name { get; init; }
+        public double Price { get; init; }
+        public int Quantity { get; init; }
+        public string Fieche { get; init; }
+        public double CashBackAmount { get; init; }
     }
 }

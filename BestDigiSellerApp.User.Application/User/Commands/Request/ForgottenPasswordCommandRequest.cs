@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.User.Application.User.Commands.Request
 {
-    public record ForgottenPasswordCommandRequest : UserPasswordResetDto, IRequest<Result<ForgottonPasswordCommandRepsonse>>
+    public record ForgottenPasswordCommandRequest : ForgottonPasswordDto, IRequest<Result<ForgottonPasswordCommandRepsonse>>
     {
 
     }

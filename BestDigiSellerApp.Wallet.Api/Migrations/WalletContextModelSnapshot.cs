@@ -42,8 +42,8 @@ namespace BestDigiSellerApp.Wallet.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<float>("Amount")
-                        .HasColumnType("real");
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");

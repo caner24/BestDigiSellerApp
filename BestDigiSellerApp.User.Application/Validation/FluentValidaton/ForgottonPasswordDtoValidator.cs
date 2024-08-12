@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BestDigiSellerApp.User.Application.Validation.FluentValidaton
 {
-    public class ForgottonPasswordDtoValidator : AbstractValidator<UserPasswordResetDto>
+    public class ForgottonPasswordDtoValidator : AbstractValidator<ForgottonPasswordDto>
     {
         public ForgottonPasswordDtoValidator()
         {

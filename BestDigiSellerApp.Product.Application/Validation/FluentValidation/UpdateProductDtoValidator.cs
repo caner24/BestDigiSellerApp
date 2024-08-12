@@ -18,7 +18,6 @@ namespace BestDigiSellerApp.Product.Application.Validation.FluentValidation
             RuleFor(x => x.Stock).GreaterThan(0).WithMessage("Min stock must be greater than 0");
             RuleFor(x => x.PointPercentage).GreaterThan(0).LessThan(101).WithMessage("PointPercentage must be greater than 0");
             RuleFor(x => x.MaxPoint).GreaterThan(0).WithMessage("MaxPoint must be greater than 0");
-            RuleFor(x => x.FormFiles).NotNull().NotEmpty().WithMessage("At least one photo req !.");
 
         }
     }

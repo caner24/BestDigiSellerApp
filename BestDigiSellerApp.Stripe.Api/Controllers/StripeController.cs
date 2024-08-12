@@ -31,34 +31,13 @@ public class StripeController : ControllerBase
     }
     [HttpGet("success")]
     [AllowAnonymous]
-    public IActionResult Success([FromQuery] string session_id)
+    public async Task<IActionResult> Success([FromQuery] CreateSuccessBillingCommandRequest createSuccessBillingCommandRequest)
     {
-        var service = new SessionService();
-        try
-        {
-            Session session = service.Get(session_id);
+        var response = await _mediator.Send(createSuccessBillingCommandRequest);
+        if (!response.IsSuccess)
+            return BadRequest(response.Errors);
 
-            var products = new List<ProductDto>();
-
-            for (int i = 0; i < session.Metadata.Count / 2; i++)
-            {
-                var productId = session.Metadata[$"productid_{i}"];
-                var quantity = session.Metadata[$"quantity_{i}"];
-                var price = session.Metadata[$"price_{i}"];
-                products.Add(new ProductDto
-                {
-                    ProductId = productId,
-                    Quantity = int.Parse(quantity),
-                    Price = long.Parse(price)
-                });
-            }
-            return Ok(products);
-        }
-        catch (Exception ex)
-        {
-
-            return BadRequest(ex.Message);
-        }
+        return Ok();
     }
 
     [HttpGet("cancel")]

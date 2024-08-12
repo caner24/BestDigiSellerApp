@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BestDigiSellerApp.Core\BestDigiSellerApp.Core.csproj" />
+  </ItemGroup>
+
 </Project>

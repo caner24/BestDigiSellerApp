@@ -50,15 +50,15 @@ namespace BestDigiSellerApp.Basket.Application.Basket.Handlers.CommandHandlers
             shoopingCartDto.Bearer = accessToken;
             foreach (var item in basket.Items)
             {
-                shoopingCartDto.Products.Add(new ProductDto { Name = item.ProductName, Price = item.Price, ProductId = item.ProductId, Quantity = item.Quantity });
+                shoopingCartDto.Products.Add(new ProductDto { Fieche = "string", Email = userEmail, Name = item.ProductName, Price = item.Price, ProductId = item.ProductId, Quantity = item.Quantity, CashBackAmount = CalculatePoints(item.Quantity, item.Price, item.PointPercentage, item.MaxPoint) });
             }
-            if (request.CouponCode != "string" || request.CouponCode != null)
+            if (request.CouponCode != "string" && request.CouponCode != null)
             {
                 var response = await _discountClient.GetCoupon(new ValidateCouponCodeDto { CouponCode = request.CouponCode, Email = userEmail });
                 if (!response.IsSuccess)
                     return Result.Fail(new CouponIsNotValid());
                 shoopingCartDto.CouponPercentage = response.Value;
-                shoopingCartDto.CouponCode = request.CouponCode;
+                shoopingCartDto.Coupon = request.CouponCode == null ? "string" : request.CouponCode;
 
             }
 
@@ -71,6 +71,13 @@ namespace BestDigiSellerApp.Basket.Application.Basket.Handlers.CommandHandlers
             }
 
             return Result.Ok(stripeRequest.Value);
+        }
+        private double CalculatePoints(int amount, double price, double pointPercentagemount, double maxpoint)
+        {
+            double pointsPerItem = price * pointPercentagemount / 100;
+            double totalPoints = pointsPerItem * amount;
+            double maxPointsPerItem = maxpoint * amount;
+            return totalPoints > maxPointsPerItem ? maxPointsPerItem : totalPoints;
         }
     }
 }

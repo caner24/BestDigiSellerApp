@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BestDigiSellerApp.Core\BestDigiSellerApp.Core.csproj" />
+    <ProjectReference Include="..\BestDigiSellerApp.Invoice.Entity\BestDigiSellerApp.Invoice.Entity.csproj" />
+  </ItemGroup>
+
 </Project>

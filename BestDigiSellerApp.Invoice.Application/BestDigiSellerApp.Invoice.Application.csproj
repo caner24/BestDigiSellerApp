@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentResults" Version="3.16.0" />
+    <PackageReference Include="MediatR" Version="12.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Invoice\Handlers\QueryHandler\" />
+    <Folder Include="Invoice\Queries\Resposne\" />
+    <Folder Include="Invoice\Queries\Request\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BestDigiSellerApp.Invoice.Data\BestDigiSellerApp.Invoice.Data.csproj" />
+    <ProjectReference Include="..\BestDigiSellerApp.Invoice.Entity\BestDigiSellerApp.Invoice.Entity.csproj" />
+  </ItemGroup>
+
+</Project>

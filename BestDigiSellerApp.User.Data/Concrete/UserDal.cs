@@ -270,7 +270,7 @@ namespace BestDigiSellerApp.User.Data.Concrete
             if (user is null)
                 return Result.Fail(new UserNotFoundResult());
 
-            var resetPassword = await _userManager.ResetPasswordAsync(user, token, password);
+            var resetPassword = await _userManager.ResetPasswordAsync(user, HttpUtility.UrlDecode(token), password);
             if (!resetPassword.Succeeded)
                 return Result.Fail<IdentityResult>(resetPassword.Errors.Select(x => x.Description));
 
@@ -295,8 +295,9 @@ namespace BestDigiSellerApp.User.Data.Concrete
             var user = await _userManager.FindByEmailAsync(userEmail);
             if (!user.TwoFactorEnabled)
             {
-                user.TwoFactorEnabled = true;
+                await _userManager.SetTwoFactorEnabledAsync(user, true);
             }
+
             return Result.Ok();
 
         }

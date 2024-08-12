@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,12 +9,19 @@ namespace BestDigiSellerApp.Invoice.Api.Controllers;
 [Authorize("Admin")]
 public class InvoiceController : ControllerBase
 {
-    public InvoiceController()
+    private readonly IMediator _mediator;
+    public InvoiceController(IMediator mediator)
     {
-        
+        _mediator = mediator;
     }
     [HttpGet("getInvoice")]
-    public IActionResult GketInvoice()
+    public IActionResult GetInvoice()
+    {
+        return Ok();
+    }
+
+    [HttpPost("createInvoice")]
+    public IActionResult CreateInvoice()
     {
         return Ok();
     }

@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BestDigiSellerApp.Core\BestDigiSellerApp.Core.csproj" />
+    <ProjectReference Include="..\BestDigiSellerApp.Stripe.Data\BestDigiSellerApp.Stripe.Data.csproj" />
     <ProjectReference Include="..\BestDigiSellerApp.Stripe.Entity\BestDigiSellerApp.Stripe.Entity.csproj" />
   </ItemGroup>
 

@@ -51,7 +51,6 @@ public class ProductController : ControllerBase
             response.Value.HasNext,
             response.Value.HasPrevious
         };
-
         var shapedProducts = response.Value.Select(o => o.Entity).ToList();
         Response.Headers.TryAdd("X-Pagination", JsonConvert.SerializeObject(metadata));
         for (var index = 0; index < response.Value.Count(); index++)
@@ -99,7 +98,7 @@ public class ProductController : ControllerBase
 
     [HttpPut("updateProduct")]
     [ServiceFilter(typeof(ValidationFilterAttribute))]
-    public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductCommandRequest createProductCommandRequest)
+    public async Task<IActionResult> UpdateProduct([FromForm] UpdateProductCommandRequest createProductCommandRequest)
     {
         var response = await _mediator.Send(createProductCommandRequest);
         if (!response.IsSuccess)

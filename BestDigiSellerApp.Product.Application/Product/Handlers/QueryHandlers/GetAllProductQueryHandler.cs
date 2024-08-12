@@ -27,7 +27,7 @@ namespace BestDigiSellerApp.Product.Application.Product.Handlers.QueryHandlers
         }
         public async Task<Result<PagedList<ShapedEntity>>> Handle(GetAllProductQueryRequest request, CancellationToken cancellationToken)
         {
-            if (request.MaxPrice != 0 && request.MinPrice != 0)
+            if (request.MaxPrice != 0 )
             {
                 if (!request.ValidPriceRange)
                     return Result.Fail(new PriceNotValidRange());

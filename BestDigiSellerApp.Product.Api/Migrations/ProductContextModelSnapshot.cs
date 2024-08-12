@@ -36,7 +36,7 @@ namespace BestDigiSellerApp.Product.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category", (string)null);
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("BestDigiSellerApp.Product.Entity.Photo", b =>
@@ -52,7 +52,7 @@ namespace BestDigiSellerApp.Product.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Photo", (string)null);
+                    b.ToTable("Photo");
                 });
 
             modelBuilder.Entity("BestDigiSellerApp.Product.Entity.Product", b =>
@@ -61,17 +61,12 @@ namespace BestDigiSellerApp.Product.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<byte[]>("Concurrency")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Product", (string)null);
+                    b.ToTable("Product");
                 });
 
             modelBuilder.Entity("BestDigiSellerApp.Product.Entity.ProductDetail", b =>
@@ -93,7 +88,7 @@ namespace BestDigiSellerApp.Product.Api.Migrations
 
                     b.HasKey("ProductId");
 
-                    b.ToTable("ProductDetail", (string)null);
+                    b.ToTable("ProductDetail");
                 });
 
             modelBuilder.Entity("CategoryProduct", b =>
@@ -108,7 +103,7 @@ namespace BestDigiSellerApp.Product.Api.Migrations
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("CategoryProduct", (string)null);
+                    b.ToTable("CategoryProduct");
                 });
 
             modelBuilder.Entity("PhotoProduct", b =>
@@ -123,7 +118,7 @@ namespace BestDigiSellerApp.Product.Api.Migrations
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("PhotoProduct", (string)null);
+                    b.ToTable("PhotoProduct");
                 });
 
             modelBuilder.Entity("BestDigiSellerApp.Product.Entity.ProductDetail", b =>

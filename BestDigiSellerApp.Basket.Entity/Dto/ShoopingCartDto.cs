@@ -13,8 +13,7 @@ namespace BestDigiSellerApp.Basket.Entity.Dto
             Products = new List<ProductDto>();
         }
         public string Bearer { get; set; }
-        public string CouponCode { get; set; }
-
+        public string Coupon { get; set; }
         public int CouponPercentage { get; set; }
         public string? EmailAdress { get; set; }
         public List<ProductDto>? Products { get; set; }

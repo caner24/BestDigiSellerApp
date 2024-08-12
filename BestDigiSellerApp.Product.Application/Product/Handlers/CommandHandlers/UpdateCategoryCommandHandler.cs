@@ -26,9 +26,9 @@ namespace BestDigiSellerApp.Product.Application.Product.Handlers.CommandHandlers
 
         public async Task<Result> Handle(UpdateCategoryCommandRequest request, CancellationToken cancellationToken)
         {
-            var category = await _unitOfWork.CategoryDal.Get(x => x.Id == request.Id).FirstOrDefaultAsync();
+            var category = await _unitOfWork.CategoryDal.Get(x => x.Id.ToString() == request.Id).FirstOrDefaultAsync();
             if (category is null)
-                return Result.Fail(new CategoryNotFoundResult(request.Id));
+                return Result.Fail(new CategoryNotFoundResult(request.Id.ToString()));
 
             var mappedCategory = _mapper.Map<Category>(request);
             await _unitOfWork.CategoryDal.UpdateAsync(mappedCategory);

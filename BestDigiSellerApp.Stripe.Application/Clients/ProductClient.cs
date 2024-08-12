@@ -11,9 +11,9 @@ namespace BestDigiSellerApp.Stripe.Application.Clients
 {
     public class ProductClient(HttpClient httpClient)
     {
-        public async Task<Result> UpdateQuantity(ProductDto productRequest, CancellationToken cancellationToken = default)
+        public async Task<Result> UpdateQuantity(ProductAmountDto productRequest, CancellationToken cancellationToken = default)
         {
-            var response = await httpClient.PostAsJsonAsync<ProductDto>($"/api/Product/productQuantityChange", productRequest, cancellationToken);
+            var response = await httpClient.PostAsJsonAsync<ProductAmountDto>($"/api/Product/productQuantityChange", productRequest, cancellationToken);
             return Result.Ok();
         }
     }

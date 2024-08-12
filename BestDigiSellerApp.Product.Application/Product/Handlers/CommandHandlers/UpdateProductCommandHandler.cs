@@ -35,7 +35,7 @@ namespace BestDigiSellerApp.Product.Application.Product.Handlers.CommandHandlers
         }
         public async Task<Result> Handle(UpdateProductCommandRequest request, CancellationToken cancellationToken)
         {
-            var searchedProduct = await _unitOfWork.ProductDal.Get(x => x.Id == request.ProductId).FirstOrDefaultAsync();
+            var searchedProduct = await _unitOfWork.ProductDal.Get(x => x.Id == request.ProductId, true).FirstOrDefaultAsync();
             if (searchedProduct == null)
                 return Result.Fail(new ProductNotFoundResult());
 
@@ -45,10 +45,12 @@ namespace BestDigiSellerApp.Product.Application.Product.Handlers.CommandHandlers
 
             foreach (var item in request.CategoryId)
             {
-                var isCategoryExist = await _unitOfWork.CategoryDal.Get(x => x.Id == item, true).FirstOrDefaultAsync();
-                if (isCategoryExist == null)
-                    return Result.Fail(new CategoryNotFoundResult(item));
-                product.Categories.Add(isCategoryExist);
+                if (searchedProduct.Categories.Where(x => x.Id == item).FirstOrDefault() is null)
+                {
+                    var isCategoryExist = await _unitOfWork.CategoryDal.Get(x => x.Id == item, true).FirstOrDefaultAsync();
+                    if (isCategoryExist == null)
+                        return Result.Fail(new CategoryNotFoundResult(item.ToString()));
+                }
             }
             var productPhotos = await _client.AddPhotoToFileApi(new PhotosForCreateDto { Files = request.FormFiles, Bearer = accessToken });
             if (!productPhotos.IsSuccess)
@@ -59,7 +61,7 @@ namespace BestDigiSellerApp.Product.Application.Product.Handlers.CommandHandlers
                 product.Photos.Add(new Photo { Url = $"https://localhost:7187/Files/{photo.File}" });
             }
 
-            var addedProduct = await _unitOfWork.ProductDal.UpdateAsync(product);
+            await _unitOfWork.Context.SaveChangesAsync();
             return Result.Ok();
         }
     }

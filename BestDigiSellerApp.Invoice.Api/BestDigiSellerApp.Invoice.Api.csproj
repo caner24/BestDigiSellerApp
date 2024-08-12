@@ -7,6 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
+    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+    <PackageReference Include="FluentValidation" Version="11.9.2" />
+    <PackageReference Include="MassTransit" Version="8.2.4" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.4" />
+    <PackageReference Include="MediatR" Version="12.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.7" />
     <PackageReference Include="Serilog" Version="4.0.1" />
     <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
@@ -14,6 +26,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BestDigiSellerApp.Aspire\BestDigiSellerApp.Aspire.ServiceDefaults\BestDigiSellerApp.Aspire.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\BestDigiSellerApp.Core\BestDigiSellerApp.Core.csproj" />
+    <ProjectReference Include="..\BestDigiSellerApp.Invoice.Data\BestDigiSellerApp.Invoice.Data.csproj" />
   </ItemGroup>
 
 </Project>

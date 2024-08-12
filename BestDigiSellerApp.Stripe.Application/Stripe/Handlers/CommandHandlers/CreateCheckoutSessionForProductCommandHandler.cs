@@ -38,7 +38,7 @@ namespace BestDigiSellerApp.Stripe.Application.Stripe.Handlers.CommandHandlers
                 {
                     PriceData = new SessionLineItemPriceDataOptions
                     {
-                        UnitAmount = request.CouponPercentage == 0 ? (long)(product.Price * 100) : (long)((product.Price*100) * request.CouponPercentage)/100,
+                        UnitAmount = request.CouponPercentage == 0 ? (long)(product.Price * 100) : (long)((product.Price * 100) * request.CouponPercentage) / 100,
                         Currency = "TRY",
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
@@ -51,9 +51,16 @@ namespace BestDigiSellerApp.Stripe.Application.Stripe.Handlers.CommandHandlers
                 options.Metadata.Add($"productid_{index}", product.ProductId.ToString());
                 options.Metadata.Add($"quantity_{index}", product.Quantity.ToString());
                 options.Metadata.Add($"price_{index}", product.Price.ToString());
+                if (request.CouponPercentage <= 0)
+                {
+                    options.Metadata.Add($"cashbackamount_{index}", product.CashBackAmount.ToString());
+                }
                 index++;
             }
+            if (request.CouponPercentage > 0)
+                options.Metadata.Add($"couponCode", request.Coupon.ToString());
 
+            options.Metadata.Add($"emailadress", request.EmailAdress.ToString());
             options.CustomerEmail = request.EmailAdress;
 
             var service = new SessionService();

@@ -9,8 +9,11 @@ namespace BestDigiSellerApp.Stripe.Entity.Dto
     public record ProductDto
     {
         public string ProductId { get; init; }
+        public string Email { get; init; }
         public string Name { get; init; }
         public double Price { get; init; }
         public int Quantity { get; init; }
+        public string Fieche { get; init; }
+        public double CashBackAmount { get; init; }
     }
 }

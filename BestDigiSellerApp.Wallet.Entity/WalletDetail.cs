@@ -15,7 +15,7 @@ namespace BestDigiSellerApp.Wallet.Entity
         public string? Iban { get; set; }
         public Wallet Wallet { get; set; }
         public Currency Currency { get; set; }
-        public float Amount { get; set; }
+        public double Amount { get; set; }
         public DateTime CreateDate => DateTime.UtcNow;
 
     }
