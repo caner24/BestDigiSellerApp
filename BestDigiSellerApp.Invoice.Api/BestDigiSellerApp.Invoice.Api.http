@@ -1,6 +1,0 @@
-@BestDigiSellerApp.Invoice.Api_HostAddress = http://localhost:5166
-
-GET {{BestDigiSellerApp.Invoice.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
